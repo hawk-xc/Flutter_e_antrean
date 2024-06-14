@@ -1,8 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_e_service_app/ui/register_view.dart';
+import '/controller/login_controller.dart';
+import '/model/user_model.dart';
+import 'package:flutter_e_service_app/main.dart';
+// import 'RegisterView.dart';
+// import 'MainMenuScreen.dart';
 
-class LoginScreen extends StatelessWidget {
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+class LoginView extends StatefulWidget {
+  @override
+  _LoginViewState createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final LoginController _loginController = LoginController();
+  bool _loading = false; // Penanganan loading state
+
+  // Fungsi untuk menangani tombol login
+  Future<void> _handleLogin() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    UserModel user = UserModel(email: email, password: password);
+
+    setState(() {
+      _loading = true; // Menampilkan loading indicator
+    });
+
+    bool isLoggedIn = false;
+
+    isLoggedIn = await _loginController.login(user);
+
+    setState(() {
+      _loading = false; // Menyembunyikan loading indicator
+    });
+
+    if (isLoggedIn) {
+      // Menampilkan pesan sukses dan navigasi ke layar utama
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Login successful!')));
+      // Navigasi ke layar menu utama (ganti dengan navigasi aktual Anda)
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainMenu()),
+      );
+    } else {
+      // Menampilkan pesan kesalahan
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Login gagal')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

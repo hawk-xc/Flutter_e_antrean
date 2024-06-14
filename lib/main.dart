@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_e_service_app/ui/login_page.dart';
+// import 'package:flutter_e_service_app/ui/login_page.dart';
+import 'package:flutter_e_service_app/ui/login_view.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -8,7 +9,8 @@ void main() => runApp(
           primarySwatch: Colors.blue,
           fontFamily: 'Poppins',
         ),
-        home: LoginScreen(),
+        // home: LoginScreen(),
+        home: LoginView(),
       ),
     );
 
@@ -19,6 +21,19 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Text("hello world"),
+    );
+  }
+}
+
+class MainMenu extends StatelessWidget {
+  const MainMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(
+        body: Center(child: Text('home base')),
+      ),
     );
   }
 }
