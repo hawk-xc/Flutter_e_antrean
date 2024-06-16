@@ -7,6 +7,8 @@ import 'package:flutter_e_service_app/main.dart';
 // import 'MainMenuScreen.dart';
 
 class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+
   @override
   _LoginViewState createState() => _LoginViewState();
 }
@@ -57,7 +59,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           image: DecorationImage(
             opacity: 0.5,
@@ -81,9 +83,9 @@ class _LoginViewState extends State<LoginView> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                        child: Row(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                        child: const Row(
                           children: [
                             Text(
                               'Login Akun',
@@ -96,8 +98,8 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                       Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
                         child: TextField(
                           controller: _emailController,
                           decoration: InputDecoration(
@@ -109,8 +111,8 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                       Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
                         child: TextField(
                           controller: _passwordController,
                           obscureText: true,
@@ -119,43 +121,44 @@ class _LoginViewState extends State<LoginView> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            suffixIcon: Icon(Icons.visibility),
+                            suffixIcon: const Icon(Icons.visibility),
                           ),
                         ),
                       ),
                       _loading
+                          // ignore: prefer_const_constructors
                           ? CircularProgressIndicator()
-                          : ElevatedButton(
-                              onPressed: _handleLogin,
-                              child: Text('Login'),
+                          : Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: ElevatedButton(
+                                onPressed: _handleLogin,
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 50),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Login akun',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
                             ),
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Text(
-                            'Login akun',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Belum Punya Akun? '),
+                          const Text('Belum Punya Akun? '),
                           GestureDetector(
                             onTap: () {
-                              // Handle register tap
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterView()),
+                              );
                             },
-                            child: Text(
+                            child: const Text(
                               'Register',
                               style: TextStyle(
                                 color: Colors.blue,

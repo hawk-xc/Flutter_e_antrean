@@ -7,6 +7,7 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -15,6 +16,7 @@ class _RegisterViewState extends State<RegisterView> {
 
   // Fungsi untuk menangani tombol register
   Future<void> _handleRegister() async {
+    String username = _usernameController.text;
     String name = _nameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -32,13 +34,16 @@ class _RegisterViewState extends State<RegisterView> {
 
     if (isRegistered) {
       // Tampilkan pesan sukses dan navigasi kembali ke layar login
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Registration successful!')));
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration successful!')));
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } else {
       // Tampilkan pesan kesalahan
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Registration failed')));
+          .showSnackBar(const SnackBar(content: Text('Registration failed')));
     }
   }
 

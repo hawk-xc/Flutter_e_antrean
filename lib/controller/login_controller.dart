@@ -11,7 +11,7 @@ class LoginController {
     try {
       final response = await _apiClient.post('/login', user.toJson());
 
-      print(response);
+      // print(response);
 
       if (response.statusCode == 200) {
         // Memeriksa apakah login berhasil berdasarkan respons API
@@ -32,7 +32,7 @@ class LoginController {
       }
     } catch (e) {
       // Menangani kesalahan (misalnya, masalah jaringan)
-      print('Login error: $e');
+      // print('Login error: $e');
       return false;
     }
   }
