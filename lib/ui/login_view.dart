@@ -18,6 +18,7 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController _passwordController = TextEditingController();
   final LoginController _loginController = LoginController();
   bool _loading = false; // Penanganan loading state
+  bool _isObscure = true;
 
   // Fungsi untuk menangani tombol login
   Future<void> _handleLogin() async {
@@ -115,13 +116,24 @@ class _LoginViewState extends State<LoginView> {
                             horizontal: 20, vertical: 15),
                         child: TextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          obscureText: _isObscure,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: 'Katasandi',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            suffixIcon: const Icon(Icons.visibility),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isObscure
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isObscure = !_isObscure;
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),

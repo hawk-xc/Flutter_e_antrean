@@ -3,9 +3,11 @@ import '../helpers/api_client.dart';
 class RegisterController {
   final ApiClient _apiClient = ApiClient();
 
-  Future<bool> register(String name, String email, String password) async {
+  Future<bool> register(
+      String username, String name, String email, String password) async {
     try {
       final response = await _apiClient.post('register', {
+        'username': username,
         'name': name,
         'email': email,
         'password': password,
@@ -17,7 +19,7 @@ class RegisterController {
         return false;
       }
     } catch (e) {
-      print('Registration error: $e');
+      // print('Registration error: $e');
       return false;
     }
   }
