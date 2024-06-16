@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/ui/register_view.dart';
 import '/controller/login_controller.dart';
 import '/model/user_model.dart';
-import 'package:flutter_e_service_app/main.dart';
+import 'package:flutter_e_service_app/ui/dashboard_view.dart';
 // import 'RegisterView.dart';
 // import 'MainMenuScreen.dart';
 
@@ -46,13 +46,15 @@ class _LoginViewState extends State<LoginView> {
           .showSnackBar(const SnackBar(content: Text('Login successful!')));
       // Navigasi ke layar menu utama (ganti dengan navigasi aktual Anda)
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => MainMenu()),
+        MaterialPageRoute(builder: (context) => const DashboardView()),
       );
     } else {
       // Menampilkan pesan kesalahan
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Login gagal')));
+          .showSnackBar(const SnackBar(content: Text('Login gagal')));
     }
   }
 
@@ -78,6 +80,7 @@ class _LoginViewState extends State<LoginView> {
                 child: Image.asset('assets/images/logo.png',
                     width: 200, height: 100),
               ),
+              // ignore: avoid_unnecessary_containers
               Container(
                 child: Center(
                   child: SingleChildScrollView(
