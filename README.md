@@ -19,6 +19,21 @@ The E-Service information system is an application designed to digitally manage 
 ## 🌸 Interface Design
 ![image](https://github.com/hawk-xc/Flutter_e_antrean/assets/92193431/327cfd34-ec84-4de5-82d6-5115402a9d48)
 
+## ℹ️ requirements
+- sdk: ">=3.4.1 <4.0.0"
+- dio: ^5.4.3+1
+- cupertino_icons: ^1.0.6
+- shared_preferences: ^2.2.3
+- flutter_lints: ^3.0.0
+
+## 💽 Installation
+```
+git clone https://github.com/hawk-xc/Flutter_e_antrean.git
+cd Flutter_e_antrean
+flutter pub get
+flutter run
+```
+
 This project is a starting point for a Flutter application.
 
 ![Alt](https://repobeats.axiom.co/api/embed/3eca32e8626aa58332e25372b8d0ec854573d253.svg "Repobeats analytics image")
