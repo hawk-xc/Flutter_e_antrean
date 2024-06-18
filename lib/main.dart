@@ -29,7 +29,7 @@ class MainPageState extends State<MainPage> {
     ProfileView(),
   ];
 
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
