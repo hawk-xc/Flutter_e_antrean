@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_e_service_app/ui/login_page.dart';
 import 'package:flutter_e_service_app/ui/login_view.dart';
-import 'package:flutter_e_service_app/ui/register_view.dart';
+// import 'package:flutter_e_service_app/ui/design_view.dart';
+// import 'package:flutter_e_service_app/ui/dashboard_view.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -10,9 +10,10 @@ void main() => runApp(
           primarySwatch: Colors.blue,
           fontFamily: 'Poppins',
         ),
-        // home: LoginScreen(),
-        // home: RegisterView(),
+        // home: MyApp(),
         home: LoginView(),
+        // home: RegisterView(),
+        // home: ProfileView(),
       ),
     );
 

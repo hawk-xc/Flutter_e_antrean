@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/ui/register_view.dart';
 import '/controller/login_controller.dart';
 import '/model/user_model.dart';
-import 'package:flutter_e_service_app/ui/dashboard_view.dart';
+// import 'package:flutter_e_service_app/ui/dashboard_view.dart';
+import 'package:flutter_e_service_app/ui/profile_view.dart';
 // import 'RegisterView.dart';
 // import 'MainMenuScreen.dart';
 
@@ -48,7 +49,7 @@ class _LoginViewState extends State<LoginView> {
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => const DashboardView()),
+        MaterialPageRoute(builder: (context) => const ProfileView()),
       );
     } else {
       // Menampilkan pesan kesalahan
@@ -160,6 +161,7 @@ class _LoginViewState extends State<LoginView> {
                                       child: ElevatedButton(
                                         onPressed: _handleLogin,
                                         style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.blue,
                                           minimumSize:
                                               const Size(double.infinity, 50),
                                           shape: RoundedRectangleBorder(
@@ -169,7 +171,9 @@ class _LoginViewState extends State<LoginView> {
                                         ),
                                         child: const Text(
                                           'Login akun',
-                                          style: TextStyle(fontSize: 16),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
                                         ),
                                       ),
                                     ),
