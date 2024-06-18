@@ -44,7 +44,7 @@ class _LoginViewState extends State<LoginView> {
       // Menampilkan pesan sukses dan navigasi ke layar utama
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Login successful!')));
+          .showSnackBar(const SnackBar(content: Text('Login diterima!')));
       // Navigasi ke layar menu utama (ganti dengan navigasi aktual Anda)
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
@@ -54,8 +54,8 @@ class _LoginViewState extends State<LoginView> {
     } else {
       // Menampilkan pesan kesalahan
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Login gagal')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Login galat, pastikan email dan kata sandi benar!')));
     }
   }
 
