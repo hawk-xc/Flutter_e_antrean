@@ -89,7 +89,7 @@ class DashboardEmpty extends StatelessWidget {
                         // ),
                         child: Container(
                           margin:
-                              EdgeInsets.symmetric(horizontal: 0, vertical: 40),
+                              EdgeInsets.symmetric(horizontal: 0, vertical: 60),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,

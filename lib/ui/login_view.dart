@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/ui/register_view.dart';
 import '/controller/login_controller.dart';
 import '/model/user_model.dart';
-// import 'package:flutter_e_service_app/ui/dashboard_view.dart';
-import 'package:flutter_e_service_app/ui/profile_view.dart';
-// import 'RegisterView.dart';
-// import 'MainMenuScreen.dart';
+import 'package:flutter_e_service_app/main.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -49,7 +46,7 @@ class _LoginViewState extends State<LoginView> {
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => const ProfileView()),
+        MaterialPageRoute(builder: (context) => const MainPage()),
       );
     } else {
       // Menampilkan pesan kesalahan

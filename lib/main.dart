@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_e_service_app/ui/login_view.dart';
+import 'package:flutter_e_service_app/ui/login_view.dart';
 import 'package:flutter_e_service_app/ui/dashboard_view.dart';
 import 'package:flutter_e_service_app/ui/profile_view.dart';
 
@@ -11,6 +11,7 @@ void main() => runApp(
           fontFamily: 'Poppins',
         ),
         home: const MainPage(),
+        // home: const LoginView(),
       ),
     );
 
