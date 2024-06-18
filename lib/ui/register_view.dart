@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_e_service_app/ui/login_view.dart';
 import '/controller/register_controller.dart';
@@ -176,6 +177,7 @@ class _RegisterViewState extends State<RegisterView> {
                                     child: ElevatedButton(
                                       onPressed: _handleRegister,
                                       style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
                                         minimumSize:
                                             const Size(double.infinity, 50),
                                         shape: RoundedRectangleBorder(
@@ -185,7 +187,8 @@ class _RegisterViewState extends State<RegisterView> {
                                       ),
                                       child: const Text(
                                         'Register akun',
-                                        style: TextStyle(fontSize: 16),
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.white),
                                       ),
                                     ),
                                   ),

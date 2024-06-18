@@ -97,27 +97,6 @@ class ProfileForm extends StatelessWidget {
   /// widget, which display the label, initial value, and an optional obscure
   @override
   Widget build(BuildContext context) {
-    // return Column(
-    //   children: [
-    //     CircleAvatar(
-    //       radius: 50,
-    //       backgroundColor: Colors.blue.shade200,
-    //       child: Icon(Icons.person, size: 50, color: Colors.white),
-    //     ),
-    //     const SizedBox(height: 16),
-    //     ProfileTextField(label: 'Username', initialValue: 'fitrialisia'),
-    //     const SizedBox(height: 8),
-    //     ProfileTextField(label: 'Nama', initialValue: data['name']),
-    //     const SizedBox(height: 8),
-    //     ProfileTextField(label: 'Email', initialValue: data['email']),
-    //     const SizedBox(height: 16),
-    //     ProfileTextField(label: 'Password Sebelumnya', obscureText: true),
-    //     const SizedBox(height: 8),
-    //     ProfileTextField(label: 'Password Baru', obscureText: true),
-    //     const SizedBox(height: 8),
-    //     ProfileTextField(label: 'Password Ulangi', obscureText: true),
-    //   ],
-    // );
     return Stack(children: <Widget>[
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 130),
