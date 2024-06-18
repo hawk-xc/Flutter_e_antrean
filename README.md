@@ -1,6 +1,8 @@
 # Flutter E-Service App
 
-<img width="600" alt="Flutter-feature" src="https://github.com/hawk-xc/Flutter_e_antrean/assets/92193431/a96438f2-c195-49c7-8df3-f5b5a41a10cc">
+
+
+![Alt](https://repobeats.axiom.co/api/embed/3eca32e8626aa58332e25372b8d0ec854573d253.svg "Repobeats analytics image")
 
 The E-Service information system is an application designed to digitally manage and optimize the queuing process at computer service shops. This application allows users to retrieve queue numbers online, monitor their queue status, and receive notifications regarding their turn.
 
