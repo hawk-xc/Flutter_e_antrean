@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String TOKEN = "token"; // Konstanta untuk kunci token
 // ignore: constant_identifier_names
 const String EMAIL = "email"; // Konstanta untuk kunci email pengguna
+const String USERNAME = "username"; // Konstanta untuk kunci email pengguna
 
 class UserInfo {
   // Metode untuk menyimpan token ke shared preferences
@@ -11,6 +12,19 @@ class UserInfo {
     final SharedPreferences pref = await SharedPreferences
         .getInstance(); // Mendapatkan instance shared preferences
     await pref.setString(TOKEN, value); // Menyimpan token sebagai string
+  }
+
+  Future<void> setUsername(String value) async {
+    final SharedPreferences pref = await SharedPreferences
+        .getInstance(); // Mendapatkan instance shared preferences
+    await pref.setString(
+        USERNAME, value); // Menyimpan nama pengguna sebagai string
+  }
+
+  Future<String?> getUsername() async {
+    final SharedPreferences pref = await SharedPreferences
+        .getInstance(); // Mendapatkan instance shared preferences
+    return pref.getString(USERNAME); // Mengambil nama pengguna yang disimpan
   }
 
   // Metode untuk mengambil token dari shared preferences

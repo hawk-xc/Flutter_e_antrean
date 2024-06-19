@@ -1,19 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_e_service_app/helpers/user_info.dart';
+import 'package:flutter_e_service_app/ui/loginPage.dart';
 import 'package:flutter_e_service_app/ui/login_view.dart';
 import 'package:flutter_e_service_app/ui/dashboard_view.dart';
 import 'package:flutter_e_service_app/ui/profile_view.dart';
+import 'package:flutter_e_service_app/ui/splash_screen.dart';
 
-void main() => runApp(
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'Poppins',
-        ),
-        home: const MainPage(),
-        // home: const LoginView(),
-      ),
-    );
+// void main() => runApp(
+//       MaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         theme: ThemeData(
+//           primarySwatch: Colors.blue,
+//           fontFamily: 'Poppins',
+//         ),
+
+//         // home: const MainPage(),
+//         // home: const LoginPage(),
+//         // home: const LoginView(),
+//       ),
+//     );
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var token = await UserInfo().getToken();
+  print(token);
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+      fontFamily: 'Poppins',
+    ),
+    home: SplashScreen(),
+  ));
+}
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

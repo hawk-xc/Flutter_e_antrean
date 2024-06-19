@@ -12,6 +12,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final LoginController _loginController = LoginController();
@@ -20,39 +21,42 @@ class _LoginViewState extends State<LoginView> {
 
   // Fungsi untuk menangani tombol login
   Future<void> _handleLogin() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    if (_formKey.currentState!.validate()) {
+      String email = _emailController.text;
+      String password = _passwordController.text;
 
-    UserModel user = UserModel(email: email, password: password);
+      UserModel user = UserModel(email: email, password: password);
 
-    setState(() {
-      _loading = true; // Menampilkan loading indicator
-    });
+      setState(() {
+        _loading = true; // Menampilkan loading indicator
+      });
 
-    bool isLoggedIn = false;
+      bool isLoggedIn = false;
 
-    isLoggedIn = await _loginController.login(user);
+      isLoggedIn = await _loginController.login(user);
 
-    setState(() {
-      _loading = false; // Menyembunyikan loading indicator
-    });
+      setState(() {
+        _loading = false; // Menyembunyikan loading indicator
+      });
 
-    if (isLoggedIn) {
-      // Menampilkan pesan sukses dan navigasi ke layar utama
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Login diterima!')));
-      // Navigasi ke layar menu utama (ganti dengan navigasi aktual Anda)
-      Navigator.pushReplacement(
+      if (isLoggedIn) {
+        // Menampilkan pesan sukses dan navigasi ke layar utama
         // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
-      );
-    } else {
-      // Menampilkan pesan kesalahan
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Login galat, pastikan email dan kata sandi benar!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Login diterima!')));
+        // Navigasi ke layar menu utama (ganti dengan navigasi aktual Anda)
+        Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()),
+        );
+      } else {
+        // Menampilkan pesan kesalahan
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content:
+                Text('Login galat, pastikan email dan kata sandi benar!')));
+      }
     }
   }
 
@@ -60,6 +64,8 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        // height: MediaQuery.of(context).size.height,
+        // width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           color: Colors.white,
           image: DecorationImage(
@@ -92,113 +98,127 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 20),
-                                child: const Row(
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 20),
+                                  child: const Row(
+                                    children: [
+                                      Text(
+                                        'Login Akun',
+                                        style: TextStyle(
+                                          fontSize: 27,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 15),
+                                  child: TextFormField(
+                                    controller: _emailController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Email wajib diisi!';
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: 'Email',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 15),
+                                  child: TextFormField(
+                                    controller: _passwordController,
+                                    obscureText: _isObscure,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Harap masukkan password!';
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      labelText: 'Katasandi',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _isObscure
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _isObscure = !_isObscure;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                _loading
+                                    ? CircularProgressIndicator()
+                                    : Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                        child: ElevatedButton(
+                                          onPressed: _handleLogin,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue,
+                                            minimumSize:
+                                                const Size(double.infinity, 50),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'Login akun',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      'Login Akun',
-                                      style: TextStyle(
-                                        fontSize: 27,
-                                        fontWeight: FontWeight.bold,
+                                    const Text('Belum Punya Akun? '),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RegisterView()),
+                                        );
+                                      },
+                                      child: const Text(
+                                        'Register',
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 15),
-                                child: TextField(
-                                  controller: _emailController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 15),
-                                child: TextField(
-                                  controller: _passwordController,
-                                  obscureText: _isObscure,
-                                  decoration: InputDecoration(
-                                    labelText: 'Katasandi',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _isObscure
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _isObscure = !_isObscure;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              _loading
-                                  // ignore: prefer_const_constructors
-                                  ? CircularProgressIndicator()
-                                  : Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      child: ElevatedButton(
-                                        onPressed: _handleLogin,
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blue,
-                                          minimumSize:
-                                              const Size(double.infinity, 50),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Login akun',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                              const SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text('Belum Punya Akun? '),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                RegisterView()),
-                                      );
-                                    },
-                                    child: const Text(
-                                      'Register',
-                                      style: TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
