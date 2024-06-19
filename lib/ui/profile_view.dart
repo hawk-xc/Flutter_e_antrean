@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import '../helpers/user_info.dart';
+import '../helpers/api_client.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -11,11 +11,11 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  Dio dio = Dio();
+  final ApiClient apiClient = ApiClient();
   Map<String, dynamic> data = {};
   final UserInfo userInfo = UserInfo();
 
-  Future<void> getApis() async {
+  Future<void> getUserData() async {
     String? token = await userInfo.getToken();
 
     if (token == null) {
@@ -26,11 +26,9 @@ class _ProfileViewState extends State<ProfileView> {
     }
 
     try {
-      final response = await dio.get(
-        'http://localhost:8000/api/user',
-        options: Options(
-          headers: {'Authorization': 'Bearer $token'},
-        ),
+      final response = await apiClient.get(
+        'user',
+        headers: {'Authorization': 'Bearer $token'},
       );
       setState(() {
         data = response.data;
@@ -45,7 +43,7 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   void initState() {
     super.initState();
-    getApis();
+    getUserData();
   }
 
   @override

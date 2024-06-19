@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 // Inisialisasi objek Dio dengan pengaturan dasar
 final Dio dio = Dio(BaseOptions(
   baseUrl: 'http://localhost:8000/api/', // URL dasar untuk API
+  // baseUrl:
+  //     'https://effb-103-164-115-58.ngrok-free.app/api/', // URL dasar untuk API
   connectTimeout: const Duration(
       seconds:
           5000), // Waktu maksimum untuk mencoba menghubungkan (dalam milidetik)
@@ -13,10 +15,12 @@ final Dio dio = Dio(BaseOptions(
 // Kelas ApiClient untuk menangani permintaan HTTP
 class ApiClient {
   // Metode untuk melakukan permintaan GET
-  Future<Response> get(String path) async {
+  Future<Response> get(String path, {Map<String, dynamic>? headers}) async {
     try {
-      final response =
-          await dio.get(Uri.encodeFull(path)); // Melakukan permintaan GET
+      final response = await dio.get(
+        Uri.encodeFull(path),
+        options: Options(headers: headers),
+      ); // Melakukan permintaan GET
       return response;
     } on DioException catch (e) {
       throw Exception(e.message); // Menangani kesalahan permintaan

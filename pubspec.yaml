@@ -52,9 +52,11 @@ flutter:
   assets:
     - assets/images/mydoodle.jpg
     - assets/images/logo.png
-    - assets/images/logobaru.png
-    - assets/images/blobs.png
+    - assets/images/logo_2.png
+    - assets/images/logo_3.png
+    - assets/images/logo_4.png
     - assets/images/item-empty.png
+    - assets/images/wave.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
