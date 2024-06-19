@@ -69,8 +69,8 @@ class _RegisterViewState extends State<RegisterView> {
               children: [
                 Container(
                   alignment: Alignment.center,
-                  child: Image.asset('assets/images/logo.png',
-                      width: 200, height: 100),
+                  child: Image.asset('assets/images/logo_4.png',
+                      width: 200, height: 200),
                 ),
                 Center(
                   child: SingleChildScrollView(

@@ -38,6 +38,8 @@ class _ProfileViewState extends State<ProfileView> {
         data = {'error': e.toString()};
       });
     }
+
+    print(data['username']);
   }
 
   @override
