@@ -7,6 +7,7 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -17,70 +18,74 @@ class _RegisterViewState extends State<RegisterView> {
 
   // Fungsi untuk menangani tombol register
   Future<void> _handleRegister() async {
-    String username = _usernameController.text;
-    String name = _nameController.text;
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    if (_formKey.currentState!.validate()) {
+      String username = _usernameController.text;
+      String name = _nameController.text;
+      String email = _emailController.text;
+      String password = _passwordController.text;
 
-    setState(() {
-      _loading = true; // Menampilkan loading indicator
-    });
+      setState(() {
+        _loading = true; // Menampilkan loading indicator
+      });
 
-    bool isRegistered =
-        await _registerController.register(username, name, email, password);
+      bool isRegistered =
+          await _registerController.register(username, name, email, password);
 
-    setState(() {
-      _loading = false; // Menyembunyikan loading indicator
-    });
+      setState(() {
+        _loading = false; // Menyembunyikan loading indicator
+      });
 
-    if (isRegistered) {
-      // Tampilkan pesan sukses dan navigasi kembali ke layar login
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registrasi sukses, silakan login!')));
-      Navigator.pop(context);
-    } else {
-      // Tampilkan pesan kesalahan
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Registrasi akun galat')));
+      if (isRegistered) {
+        // Tampilkan pesan sukses dan navigasi kembali ke layar login
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Registrasi sukses, silakan login!')));
+        Navigator.pop(context);
+      } else {
+        // Tampilkan pesan kesalahan
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Registrasi akun galat')));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/mydoodle.jpg',
-                fit: BoxFit.cover,
-              ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/mydoodle.jpg',
+              fit: BoxFit.cover,
+              opacity: const AlwaysStoppedAnimation(0.5),
             ),
-            SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(top: 50), // Adjust as needed
-                    child: Image.asset('assets/images/logo_4.png',
-                        width: 200, height: 200),
-                  ),
-                  Container(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Card(
-                          color: Colors.white,
-                          elevation: 8,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
+          ),
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: Image.asset('assets/images/logo.png',
+                      width: 200, height: 100),
+                ),
+                Center(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Form(
+                            key: _formKey,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -102,8 +107,14 @@ class _RegisterViewState extends State<RegisterView> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 15),
-                                  child: TextField(
+                                  child: TextFormField(
                                     controller: _usernameController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Username tidak boleh kosong!';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       labelText: 'Username',
                                       border: OutlineInputBorder(
@@ -115,8 +126,14 @@ class _RegisterViewState extends State<RegisterView> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 15),
-                                  child: TextField(
+                                  child: TextFormField(
                                     controller: _nameController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Nama tidak boleh kosong!';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       labelText: 'Nama',
                                       border: OutlineInputBorder(
@@ -128,8 +145,17 @@ class _RegisterViewState extends State<RegisterView> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 15),
-                                  child: TextField(
+                                  child: TextFormField(
                                     controller: _emailController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Email tidak boleh kosong!';
+                                      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                          .hasMatch(value)) {
+                                        return 'Masukkan Email yang valid!';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       labelText: 'Email',
                                       border: OutlineInputBorder(
@@ -141,8 +167,16 @@ class _RegisterViewState extends State<RegisterView> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 15),
-                                  child: TextField(
+                                  child: TextFormField(
                                     controller: _passwordController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Kata Sandi tidak boleh kosong!';
+                                      } else if (value.length < 8) {
+                                        return 'Kata Sandi minimal 8 karakter!';
+                                      }
+                                      return null;
+                                    },
                                     obscureText: _isObscure,
                                     decoration: InputDecoration(
                                       labelText: 'Katasandi',
@@ -214,11 +248,11 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
