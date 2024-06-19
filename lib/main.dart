@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_e_service_app/ui/login_view.dart';
+// import 'package:flutter_e_service_app/ui/login_view.dart';
 import 'package:flutter_e_service_app/ui/dashboard_view.dart';
 import 'package:flutter_e_service_app/ui/profile_view.dart';
+import 'package:flutter_e_service_app/ui/splash_screen_view.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -11,7 +12,8 @@ void main() => runApp(
           fontFamily: 'Poppins',
         ),
         // home: const MainPage(),
-        home: const LoginView(),
+        home: const SplashScreen(),
+        // home: const LoginView(),
       ),
     );
 
@@ -42,34 +44,34 @@ class MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Container(
-        height: 90,
+        height: 60,
         child: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.home,
-                size: 30,
+                size: 25,
               ),
               label: 'Home',
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.laptop_mac,
-                size: 30,
+                size: 25,
               ),
               label: 'Laptop',
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.layers,
-                size: 30,
+                size: 25,
               ),
               label: 'Papers',
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.account_circle,
-                size: 30,
+                size: 25,
               ),
               label: 'Profile',
             ),

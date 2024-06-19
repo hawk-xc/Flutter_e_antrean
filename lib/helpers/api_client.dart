@@ -15,10 +15,12 @@ final Dio dio = Dio(BaseOptions(
 // Kelas ApiClient untuk menangani permintaan HTTP
 class ApiClient {
   // Metode untuk melakukan permintaan GET
-  Future<Response> get(String path) async {
+  Future<Response> get(String path, {Map<String, dynamic>? headers}) async {
     try {
-      final response =
-          await dio.get(Uri.encodeFull(path)); // Melakukan permintaan GET
+      final response = await dio.get(
+        Uri.encodeFull(path),
+        options: Options(headers: headers),
+      ); // Melakukan permintaan GET
       return response;
     } on DioException catch (e) {
       throw Exception(e.message); // Menangani kesalahan permintaan

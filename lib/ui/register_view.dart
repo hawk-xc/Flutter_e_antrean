@@ -66,8 +66,8 @@ class _RegisterViewState extends State<RegisterView> {
                   Container(
                     alignment: Alignment.center,
                     margin: const EdgeInsets.only(top: 50), // Adjust as needed
-                    child: Image.asset('assets/images/logo.png',
-                        width: 200, height: 100),
+                    child: Image.asset('assets/images/logo_4.png',
+                        width: 200, height: 200),
                   ),
                   Container(
                     child: Center(

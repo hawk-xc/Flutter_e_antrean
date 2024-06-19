@@ -54,6 +54,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/logo_2.png
     - assets/images/logo_3.png
+    - assets/images/logo_4.png
     - assets/images/item-empty.png
     - assets/images/wave.png
   #   - images/a_dot_ham.jpeg
