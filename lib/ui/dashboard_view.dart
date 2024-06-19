@@ -9,7 +9,7 @@ class DashboardView extends StatefulWidget {
 
 class _DashboardViewState extends State<DashboardView> {
   Map<String, dynamic> data = {
-    'name': '',
+    'name': 'sds',
     'age': 30,
     // tambahkan data lain sesuai kebutuhan testing
   };
@@ -77,16 +77,6 @@ class DashboardEmpty extends StatelessWidget {
                             width: 300, height: 300),
                       ),
                       Container(
-                        //   child: const Column(
-                        //     crossAxisAlignment: CrossAxisAlignment.center,
-                        //     mainAxisAlignment: MainAxisAlignment.center,
-                        //     children: [
-                        //       Text('Hallo Users'),
-                        //       Text(
-                        //           'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.')
-                        //     ],
-                        //   ),
-                        // ),
                         child: Container(
                           margin:
                               EdgeInsets.symmetric(horizontal: 0, vertical: 60),
