@@ -14,7 +14,7 @@ The E-Service information system is an application designed to digitally manage 
 ## 🔑 Tools
 - 🔥 Laravel E-Service App APIs
 - 🛠️ Flutter SDK
-- Text Editor
+- 🗒️ Text Editor
 
 ## 🌸 Interface Design
 ![image](https://github.com/hawk-xc/Flutter_e_antrean/assets/92193431/327cfd34-ec84-4de5-82d6-5115402a9d48)
