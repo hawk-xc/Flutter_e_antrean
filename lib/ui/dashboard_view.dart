@@ -9,11 +9,21 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-  Map<String, dynamic> data = {
-    'name': 'sds',
-    'age': 30,
-    // tambahkan data lain sesuai kebutuhan testing
-  };
+  String? _username;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername();
+  }
+
+  Future<void> _loadUsername() async {
+    UserInfo userInfo = UserInfo();
+    String? username = await userInfo.getUsername();
+    setState(() {
+      _username = username;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,23 +90,21 @@ class DashboardEmpty extends StatelessWidget {
                             width: 300, height: 300),
                       ),
                       Container(
-                        child: Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 0, vertical: 60),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Hallo Users',
-                                style: TextStyle(fontSize: 30),
-                              ),
-                              Text(
-                                'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.',
-                                textAlign: TextAlign.center,
-                              )
-                            ],
-                          ),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 0, vertical: 60),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Hallo ',
+                              style: TextStyle(fontSize: 30),
+                            ),
+                            Text(
+                              'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.',
+                              textAlign: TextAlign.center,
+                            )
+                          ],
                         ),
                       ),
                       Container(
