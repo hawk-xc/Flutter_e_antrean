@@ -10,8 +10,8 @@ void main() => runApp(
           primarySwatch: Colors.blue,
           fontFamily: 'Poppins',
         ),
-        home: const MainPage(),
-        // home: const LoginView(),
+        // home: const MainPage(),
+        home: const LoginView(),
       ),
     );
 
