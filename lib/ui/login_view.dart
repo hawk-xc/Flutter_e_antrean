@@ -12,6 +12,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final LoginController _loginController = LoginController();
@@ -20,80 +21,85 @@ class _LoginViewState extends State<LoginView> {
 
   // Fungsi untuk menangani tombol login
   Future<void> _handleLogin() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    if (_formKey.currentState!.validate()) {
+      String email = _emailController.text;
+      String password = _passwordController.text;
 
-    UserModel user = UserModel(email: email, password: password);
+      UserModel user = UserModel(email: email, password: password);
 
-    setState(() {
-      _loading = true; // Menampilkan loading indicator
-    });
+      setState(() {
+        _loading = true; // Menampilkan loading indicator
+      });
 
-    bool isLoggedIn = false;
+      bool isLoggedIn = false;
 
-    isLoggedIn = await _loginController.login(user);
+      isLoggedIn = await _loginController.login(user);
 
-    setState(() {
-      _loading = false; // Menyembunyikan loading indicator
-    });
+      setState(() {
+        _loading = false; // Menyembunyikan loading indicator
+      });
 
-    if (isLoggedIn) {
-      // Menampilkan pesan sukses dan navigasi ke layar utama
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Login diterima!')));
-      // Navigasi ke layar menu utama (ganti dengan navigasi aktual Anda)
-      Navigator.pushReplacement(
+      if (isLoggedIn) {
+        // Menampilkan pesan sukses dan navigasi ke layar utama
         // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
-      );
-    } else {
-      // Menampilkan pesan kesalahan
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Login galat, pastikan email dan kata sandi benar!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Login diterima!')));
+        // Navigasi ke layar menu utama (ganti dengan navigasi aktual Anda)
+        Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()),
+        );
+      } else {
+        // Menampilkan pesan kesalahan
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content:
+                Text('Login galat, pastikan email dan kata sandi benar!')));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/mydoodle.jpg'),
-                  fit: BoxFit.cover,
-                ),
+      body: Container(
+        // height: MediaQuery.of(context).size.height,
+        // width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+            opacity: 0.5,
+            image: AssetImage('assets/images/mydoodle.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                // child: const Image(image: AssetImage('assets/images/logo.png')),
+                child: Image.asset('assets/images/logo.png',
+                    width: 200, height: 100),
               ),
-            ),
-            SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(top: 50), // Adjust as needed
-                    child: Image.asset('assets/images/logo_4.png',
-                        width: 200, height: 200),
-                  ),
-                  Container(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: Card(
-                          color: Colors.white,
-                          elevation: 8,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
+              // ignore: avoid_unnecessary_containers
+              Container(
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Form(
+                            key: _formKey,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -115,8 +121,14 @@ class _LoginViewState extends State<LoginView> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 15),
-                                  child: TextField(
+                                  child: TextFormField(
                                     controller: _emailController,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Email wajib diisi!';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       labelText: 'Email',
                                       border: OutlineInputBorder(
@@ -128,9 +140,15 @@ class _LoginViewState extends State<LoginView> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 20, vertical: 15),
-                                  child: TextField(
+                                  child: TextFormField(
                                     controller: _passwordController,
                                     obscureText: _isObscure,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Harap masukkan password!';
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       labelText: 'Katasandi',
                                       border: OutlineInputBorder(
@@ -152,7 +170,7 @@ class _LoginViewState extends State<LoginView> {
                                   ),
                                 ),
                                 _loading
-                                    ? const CircularProgressIndicator()
+                                    ? CircularProgressIndicator()
                                     : Container(
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 10),

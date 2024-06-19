@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_e_service_app/helpers/user_info.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -16,27 +17,29 @@ class _DashboardViewState extends State<DashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/mydoodle.jpg'),
-          fit: BoxFit.cover,
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/mydoodle.jpg'),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              if (data.isEmpty)
-                const CircularProgressIndicator()
-              else if (data.containsKey('error'))
-                Text('Error: ${data['error']}')
-              else if (data['name'] == null || data['name'].isEmpty)
-                const DashboardEmpty() // Tampilan ketika data kosong
-              else
-                const DashboardNotEmpty(),
-            ],
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                if (_username == null)
+                  const CircularProgressIndicator()
+                else if (_username!.isEmpty)
+                  DashboardEmpty() // Tampilan ketika data username kosong
+                else
+                  DashboardNotEmpty(
+                      username:
+                          _username!), // Tampilan ketika data username ada
+              ],
+            ),
           ),
         ),
       ),
@@ -103,8 +106,8 @@ class DashboardEmpty extends StatelessWidget {
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(335, 50),
-                            backgroundColor: Colors
-                                .blue, // Warna latar belakang tombol // Warna teks tombol
+                            backgroundColor:
+                                Colors.blue, // Warna latar belakang tombol
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
                                   10.0), // Radius sudut tombol
@@ -129,10 +132,16 @@ class DashboardEmpty extends StatelessWidget {
 }
 
 class DashboardNotEmpty extends StatelessWidget {
-  const DashboardNotEmpty({super.key});
+  final String username;
+  const DashboardNotEmpty({required this.username, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Dashboard Not Empty");
+    return Center(
+      child: Text(
+        "Welcome, $username!",
+        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 }
