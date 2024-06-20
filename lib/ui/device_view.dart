@@ -260,31 +260,36 @@ class DeviceNotEmpty extends StatelessWidget {
         Card(
           color: Colors.white,
           elevation: 4,
-          child: Row(
-            children: [
-              Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('Total Perangkat Anda'),
-                          Text(
-                            devices.length.toString(),
-                            style: const TextStyle(
-                                fontSize: 40, fontWeight: FontWeight.bold),
-                          )
-                        ],
-                      ),
-                      ElevatedButton(
-                          onPressed: () {}, child: const Text("Tambah"))
-                    ],
-                  )),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(25, 15, 25, 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Total Perangkat Anda'),
+                    Text(
+                      devices.length.toString(),
+                      style: const TextStyle(
+                          fontSize: 40, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    // backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {},
+                  child: const Text("Tambah"),
+                ),
+              ],
+            ),
           ),
         ),
         Card(
