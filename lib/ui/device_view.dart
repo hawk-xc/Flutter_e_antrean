@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_e_service_app/model/device_model.dart';
 import 'package:flutter_e_service_app/controller/device_controller.dart';
 import 'package:flutter_e_service_app/model/device_model.dart';
 
@@ -13,9 +12,8 @@ class DeviceView extends StatefulWidget {
 class _DeviceViewState extends State<DeviceView>
     with SingleTickerProviderStateMixin {
   Map<String, dynamic> data = {
-    'name': 'sd',
+    'name': 'sds',
     'age': 30,
-    // // tambahkan data lain sesuai kebutuhan testing
   };
 
   List<DeviceModel> devices = [];
@@ -90,31 +88,33 @@ class _DeviceViewState extends State<DeviceView>
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                if (showForm)
-                  SlideTransition(
-                    position: _animation,
-                    child: _buildForm(),
-                  )
-                else if (data.isEmpty)
-                  const CircularProgressIndicator()
-                else if (data.containsKey('error'))
-                  Text('Error: ${data['error']}')
-                else if (data['name'] == null || data['name'].isEmpty)
-                  DeviceEmpty(
-                      onAddDevice:
-                          _toggleFormVisibility) // Pass the function to toggle form visibility
-                else
-                  DeviceNotEmpty(
-                    devices: devices,
-                  ),
-              ],
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    if (showForm)
+                      SlideTransition(
+                        position: _animation,
+                        child: _buildForm(),
+                      )
+                    else if (data.isEmpty)
+                      const CircularProgressIndicator()
+                    else if (data.containsKey('error'))
+                      Text('Error: ${data['error']}')
+                    else if (data['name'] == null || data['name'].isEmpty)
+                      Center(
+                        child: DeviceEmpty(onAddDevice: _toggleFormVisibility),
+                      )
+                    else
+                      DeviceNotEmpty(devices: devices),
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -166,37 +166,38 @@ class DeviceEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        child: Card(
-          color: Colors.white,
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        child: Image.asset('assets/images/item-empty.png',
-                            width: 300, height: 300),
-                      ),
-                      Container(
-                        child: Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 0, vertical: 60),
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Card(
+            color: Colors.white,
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          child: Image.asset('assets/images/item-empty.png',
+                              width: 300, height: 300),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 0, vertical: 60),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -212,9 +213,7 @@ class DeviceEmpty extends StatelessWidget {
                             ],
                           ),
                         ),
-                      ),
-                      Container(
-                        child: ElevatedButton(
+                        ElevatedButton(
                             onPressed: onAddDevice,
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(335, 50),
@@ -237,47 +236,87 @@ class DeviceEmpty extends StatelessWidget {
                                 ),
                               ],
                             )),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ]);
   }
 }
 
-// ignore: must_be_immutable
 class DeviceNotEmpty extends StatelessWidget {
-  List<DeviceModel> devices;
-  // const DeviceNotEmpty({super.key});
-  DeviceNotEmpty({required this.devices});
+  final List<DeviceModel> devices;
+
+  const DeviceNotEmpty({super.key, required this.devices});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: devices.length,
-      itemBuilder: (context, index) {
-        final device = devices[index];
-        return ListTile(
-          leading: const CircleAvatar(
-            child: Icon(Icons.devices),
-          ),
-          title: Text(device.deviceName),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Card(
+          color: Colors.white,
+          elevation: 4,
+          child: Row(
             children: [
-              Text('Year: ${device.deviceYear}'),
-              Text('User ID: ${device.userId}'),
+              Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Total Perangkat Anda'),
+                          Text(
+                            devices.length.toString(),
+                            style: const TextStyle(
+                                fontSize: 40, fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                      ElevatedButton(
+                          onPressed: () {}, child: const Text("Tambah"))
+                    ],
+                  )),
             ],
           ),
-        );
-      },
+        ),
+        Card(
+          elevation: 4,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: devices.isEmpty
+                ? const CircularProgressIndicator()
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: devices.length,
+                    itemBuilder: (context, index) {
+                      final device = devices[index];
+                      return ListTile(
+                        leading: const CircleAvatar(
+                          child: Icon(Icons.devices),
+                        ),
+                        title: Text(device.deviceName),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Year: ${device.deviceYear}'),
+                            Text('User ID: ${device.userId}'),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ),
+      ],
     );
   }
 }
