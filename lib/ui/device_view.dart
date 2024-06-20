@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter_e_service_app/model/device_model.dart';
+import 'package:flutter_e_service_app/controller/device_controller.dart';
+import 'package:flutter_e_service_app/model/device_model.dart';
 
 class DeviceView extends StatefulWidget {
   const DeviceView({super.key});
@@ -7,37 +10,147 @@ class DeviceView extends StatefulWidget {
   State<DeviceView> createState() => _DeviceViewState();
 }
 
-class _DeviceViewState extends State<DeviceView> {
+class _DeviceViewState extends State<DeviceView>
+    with SingleTickerProviderStateMixin {
   Map<String, dynamic> data = {
-    'name': 'sds',
+    'name': 'sd',
     'age': 30,
-    // tambahkan data lain sesuai kebutuhan testing
+    // // tambahkan data lain sesuai kebutuhan testing
   };
+
+  List<DeviceModel> devices = [];
+
+  bool showForm = false;
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+
+  late AnimationController _animationController;
+  late Animation<Offset> _animation;
+
+  Future<void> _getDeviceData() async {
+    var response = await DeviceController().index();
+    setState(() {
+      devices = response;
+    });
+  }
+
+  @override
+  void initState() {
+    _getDeviceData();
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animation = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _nameController.dispose();
+    _ageController.dispose();
+    super.dispose();
+  }
+
+  void _toggleFormVisibility() {
+    setState(() {
+      showForm = !showForm;
+      if (showForm) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  void _addDevice() {
+    setState(() {
+      data['name'] = _nameController.text;
+      data['age'] = int.tryParse(_ageController.text) ?? 30;
+      showForm = false;
+    });
+    _animationController.reverse();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/mydoodle.jpg'),
-          fit: BoxFit.cover,
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/mydoodle.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                if (showForm)
+                  SlideTransition(
+                    position: _animation,
+                    child: _buildForm(),
+                  )
+                else if (data.isEmpty)
+                  const CircularProgressIndicator()
+                else if (data.containsKey('error'))
+                  Text('Error: ${data['error']}')
+                else if (data['name'] == null || data['name'].isEmpty)
+                  DeviceEmpty(
+                      onAddDevice:
+                          _toggleFormVisibility) // Pass the function to toggle form visibility
+                else
+                  DeviceNotEmpty(devices[0].deviceName),
+              ],
+            ),
+          ),
         ),
       ),
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              if (data.isEmpty)
-                const CircularProgressIndicator()
-              else if (data.containsKey('error'))
-                Text('Error: ${data['error']}')
-              else if (data['name'] == null || data['name'].isEmpty)
-                const DeviceEmpty() // Tampilan ketika data kosong
-              else
-                const DeviceNotEmpty(),
-            ],
-          ),
+    );
+  }
+
+  Widget _buildForm() {
+    return Card(
+      color: Colors.white,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Name'),
+            ),
+            TextField(
+              controller: _ageController,
+              decoration: const InputDecoration(labelText: 'Age'),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _addDevice,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Text('Submit'),
+            ),
+          ],
         ),
       ),
     );
@@ -45,7 +158,9 @@ class _DeviceViewState extends State<DeviceView> {
 }
 
 class DeviceEmpty extends StatelessWidget {
-  const DeviceEmpty({super.key});
+  final VoidCallback onAddDevice;
+
+  const DeviceEmpty({super.key, required this.onAddDevice});
 
   @override
   Widget build(BuildContext context) {
@@ -98,23 +213,28 @@ class DeviceEmpty extends StatelessWidget {
                       ),
                       Container(
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Tindakan yang dilakukan ketika tombol ditekan
-                          },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(335, 50),
-                            backgroundColor: Colors
-                                .blue, // Warna latar belakang tombol // Warna teks tombol
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  10.0), // Radius sudut tombol
+                            onPressed: onAddDevice,
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(335, 50),
+                              backgroundColor: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            'Tambah data',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  'Tambah Perangkat',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            )),
                       )
                     ],
                   ),
@@ -128,11 +248,14 @@ class DeviceEmpty extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class DeviceNotEmpty extends StatelessWidget {
-  const DeviceNotEmpty({super.key});
+  String? deviceName;
+  // const DeviceNotEmpty({super.key});
+  DeviceNotEmpty(this.deviceName);
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Dashboard Not Empty");
+    return Text(deviceName.toString());
   }
 }

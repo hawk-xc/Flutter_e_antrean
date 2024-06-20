@@ -1,4 +1,5 @@
 import '../helpers/api_client.dart';
+import 'package:flutter_e_service_app/model/device_model.dart';
 
 class DeviceController {
   final ApiClient _apiClient = ApiClient();
@@ -8,7 +9,12 @@ class DeviceController {
       final response = await _apiClient.get('device');
 
       if (response.statusCode == 200) {
-        return response.data;
+        List<dynamic> data = response.data['data'];
+        return data
+            .map((deviceJson) => DeviceModel.fromJson(deviceJson))
+            .toList();
+      } else {
+        throw Exception('Failed to load devices');
       }
     } catch (e) {
       return e;
