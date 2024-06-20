@@ -109,7 +109,9 @@ class _DeviceViewState extends State<DeviceView>
                       onAddDevice:
                           _toggleFormVisibility) // Pass the function to toggle form visibility
                 else
-                  DeviceNotEmpty(devices[0].deviceName),
+                  DeviceNotEmpty(
+                    devices: devices,
+                  ),
               ],
             ),
           ),
@@ -250,12 +252,32 @@ class DeviceEmpty extends StatelessWidget {
 
 // ignore: must_be_immutable
 class DeviceNotEmpty extends StatelessWidget {
-  String? deviceName;
+  List<DeviceModel> devices;
   // const DeviceNotEmpty({super.key});
-  DeviceNotEmpty(this.deviceName);
+  DeviceNotEmpty({required this.devices});
 
   @override
   Widget build(BuildContext context) {
-    return Text(deviceName.toString());
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: devices.length,
+      itemBuilder: (context, index) {
+        final device = devices[index];
+        return ListTile(
+          leading: const CircleAvatar(
+            child: Icon(Icons.devices),
+          ),
+          title: Text(device.deviceName),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Year: ${device.deviceYear}'),
+              Text('User ID: ${device.userId}'),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
