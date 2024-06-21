@@ -286,16 +286,17 @@ class DeviceNotEmpty extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {},
-                  child: const Text("Tambah"),
+                  child: const Row(children: [Icon(Icons.add), Text("Tambah")]),
                 ),
               ],
             ),
           ),
         ),
         Card(
+          color: Colors.white,
           elevation: 4,
           child: Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(20),
             child: devices.isEmpty
                 ? const CircularProgressIndicator()
                 : ListView.builder(
@@ -304,17 +305,33 @@ class DeviceNotEmpty extends StatelessWidget {
                     itemCount: devices.length,
                     itemBuilder: (context, index) {
                       final device = devices[index];
-                      return ListTile(
-                        leading: const CircleAvatar(
-                          child: Icon(Icons.devices),
-                        ),
-                        title: Text(device.deviceName),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Year: ${device.deviceYear}'),
-                            Text('User ID: ${device.userId}'),
-                          ],
+                      return GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 0, vertical: 5),
+                          decoration: BoxDecoration(
+                              color: const Color(0xFFEFF0F9),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: ListTile(
+                            leading: const CircleAvatar(
+                              child: Icon(Icons.devices),
+                            ),
+                            title: Text(
+                              device.deviceName,
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Year: ${device.deviceYear}'),
+                                Text('User ID: ${device.userId}'),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },
