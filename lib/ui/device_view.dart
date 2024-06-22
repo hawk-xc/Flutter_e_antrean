@@ -327,8 +327,26 @@ class DeviceNotEmpty extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Year: ${device.deviceYear}'),
-                                Text('User ID: ${device.userId}'),
+                                Row(children: [
+                                  const Icon(
+                                    Icons.person,
+                                    size: 12,
+                                  ),
+                                  Text(
+                                    device.userName.toString(),
+                                    style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ]),
+                                // Text('Year: ${device.deviceYear}'),
+                                Row(children: [
+                                  const Icon(Icons.access_alarm, size: 12),
+                                  Text(
+                                    device.createdAtDiff.toString(),
+                                    style: const TextStyle(fontSize: 10),
+                                  ),
+                                ]),
                               ],
                             ),
                           ),
