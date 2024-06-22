@@ -61,11 +61,15 @@ class _DeviceViewState extends State<DeviceView>
 
   void _toggleFormVisibility() {
     setState(() {
-      showForm = !showForm;
       if (showForm) {
-        _animationController.forward();
+        _animationController.reverse().then((_) {
+          setState(() {
+            showForm = false;
+          });
+        });
       } else {
-        _animationController.reverse();
+        showForm = true;
+        _animationController.forward();
       }
     });
   }
@@ -125,7 +129,7 @@ class _DeviceViewState extends State<DeviceView>
 
   Widget _buildForm() {
     return Container(
-      height: MediaQuery.of(context).size.height,
+      height: MediaQuery.of(context).size.height - 50,
       padding: const EdgeInsets.all(40),
       child: Card(
         color: Colors.white,
@@ -243,7 +247,7 @@ class _DeviceViewState extends State<DeviceView>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: _addDevice,
+                      onPressed: _toggleFormVisibility, // Update this line
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
@@ -267,7 +271,7 @@ class _DeviceViewState extends State<DeviceView>
                       ),
                       child: const Padding(
                         padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                        child: Text('Submit',
+                        child: Text('Simpan',
                             style:
                                 TextStyle(color: Colors.white, fontSize: 14)),
                       ),
@@ -308,19 +312,18 @@ class DeviceEmpty extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          child: Image.asset('assets/images/item-empty.png',
-                              width: 300, height: 300),
+                    child: const Column(
+                      children: <Widget>[
+                        Center(
+                          child: Image(
+                              image: AssetImage('assets/images/item-empty.png'),
+                              width: 300,
+                              height: 300),
                         ),
                         Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 0, vertical: 60),
-                          child: const Column(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 0, vertical: 60),
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
@@ -338,13 +341,13 @@ class DeviceEmpty extends StatelessWidget {
                         ElevatedButton(
                             onPressed: onAddDevice,
                             style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(335, 50),
+                              minimumSize: Size(335, 50),
                               backgroundColor: Colors.blue,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
