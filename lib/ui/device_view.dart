@@ -136,10 +136,11 @@ class _DeviceViewState extends State<DeviceView>
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(children: [
-                const Text(
+              const Row(children: [
+                Text(
                   'Tambah Perangkat',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -237,16 +238,41 @@ class _DeviceViewState extends State<DeviceView>
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _addDevice,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: const Text('Submit'),
-              ),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _addDevice,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+                        child: Text('Batalkan',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 14)),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: _addDevice,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+                        child: Text('Submit',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 14)),
+                      ),
+                    ),
+                  ]),
             ],
           ),
         ),
