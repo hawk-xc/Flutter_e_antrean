@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_e_service_app/controller/device_controller.dart';
 import 'package:flutter_e_service_app/model/device_model.dart';
@@ -23,6 +24,7 @@ class _DeviceViewState extends State<DeviceView>
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _driveLinkController = TextEditingController();
 
   late AnimationController _animationController;
   late Animation<Offset> _animation;
@@ -56,6 +58,7 @@ class _DeviceViewState extends State<DeviceView>
     _animationController.dispose();
     _nameController.dispose();
     _ageController.dispose();
+    _driveLinkController.dispose();
     super.dispose();
   }
 
@@ -74,13 +77,51 @@ class _DeviceViewState extends State<DeviceView>
     });
   }
 
-  void _addDevice() {
-    setState(() {
-      data['name'] = _nameController.text;
-      data['age'] = int.tryParse(_ageController.text) ?? 30;
-      showForm = false;
-    });
-    _animationController.reverse();
+  Future<void> _addDevice() async {
+    // Replace with actual user ID retrieval logic
+    String userId = '1';
+    String deviceName = _nameController.text;
+    String deviceYear = _ageController.text;
+    String driveLink = _driveLinkController.text;
+
+    bool success = await DeviceController()
+        .store(userId, deviceName, deviceYear, driveLink);
+
+    if (success) {
+      // Optionally, you can fetch the updated device list from the server
+      await _getDeviceData();
+      _toggleFormVisibility();
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Row(children: [
+          Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+            child: const Icon(
+              Icons.check_circle,
+              color: Colors.white,
+            ),
+          ),
+          const Text('Berhasil menambahkan data Perangkat!')
+        ])),
+      );
+    } else {
+      // Handle the error, e.g., show a message to the user
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Row(children: [
+          Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+            child: const Icon(
+              Icons.cancel,
+              color: Colors.white,
+            ),
+          ),
+          const Text('Galat menambahkan data Perangkat!')
+        ])),
+      );
+    }
   }
 
   @override
@@ -213,7 +254,7 @@ class _DeviceViewState extends State<DeviceView>
                 margin:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 child: TextFormField(
-                  controller: _nameController,
+                  controller: _ageController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Tahun perangkat wajib diisi!';
@@ -232,7 +273,7 @@ class _DeviceViewState extends State<DeviceView>
                 margin:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 child: TextFormField(
-                  controller: _nameController,
+                  controller: _driveLinkController,
                   decoration: InputDecoration(
                     labelText: 'Drive Link',
                     border: OutlineInputBorder(
@@ -271,7 +312,7 @@ class _DeviceViewState extends State<DeviceView>
                       ),
                       child: const Padding(
                         padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                        child: Text('Simpan',
+                        child: Text('Submit',
                             style:
                                 TextStyle(color: Colors.white, fontSize: 14)),
                       ),
@@ -292,83 +333,66 @@ class DeviceEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Card(
-            color: Colors.white,
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
-                    child: const Column(
-                      children: <Widget>[
-                        Center(
-                          child: Image(
-                              image: AssetImage('assets/images/item-empty.png'),
-                              width: 300,
-                              height: 300),
-                        ),
-                        Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 0, vertical: 60),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Hallo Users',
-                                style: TextStyle(fontSize: 30),
-                              ),
-                              Text(
-                                'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.',
-                                textAlign: TextAlign.center,
-                              )
-                            ],
-                          ),
-                        ),
-                        ElevatedButton(
-                            onPressed: onAddDevice,
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(335, 50),
-                              backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                ),
-                                Text(
-                                  'Tambah Perangkat',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            )),
-                      ],
+    return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+      Card(
+          color: Colors.white,
+          elevation: 4,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(25, 40, 25, 40),
+            child: Column(
+              children: <Widget>[
+                const Center(
+                  child: Image(
+                      image: AssetImage('assets/images/item-empty.png'),
+                      width: 300,
+                      height: 300),
+                ),
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 60),
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Hallo Users',
+                        style: TextStyle(fontSize: 30),
+                      ),
+                      Text(
+                        'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.',
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: onAddDevice,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(335, 50),
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                ],
-              ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const <Widget>[
+                      Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        'Tambah Perangkat',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-        ]);
+          ))
+    ]);
   }
 }
 

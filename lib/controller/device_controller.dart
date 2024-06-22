@@ -24,7 +24,7 @@ class DeviceController {
   Future<bool> store(String userId, String deviceName, String deviceYear,
       String driveLink) async {
     try {
-      final response = await _apiClient.post('store', {
+      final response = await _apiClient.post('device', {
         'user_id': userId,
         'device_name': deviceName,
         'device_year': deviceYear,
@@ -32,6 +32,7 @@ class DeviceController {
       });
 
       if (response.statusCode == 200) {
+        print(response.data);
         return true;
       } else {
         return false;
