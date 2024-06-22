@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_e_service_app/controller/device_controller.dart';
 import 'package:flutter_e_service_app/model/device_model.dart';
 
@@ -12,7 +13,7 @@ class DeviceView extends StatefulWidget {
 class _DeviceViewState extends State<DeviceView>
     with SingleTickerProviderStateMixin {
   Map<String, dynamic> data = {
-    'name': 'sds',
+    'name': '',
     'age': 30,
   };
 
@@ -81,78 +82,173 @@ class _DeviceViewState extends State<DeviceView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/mydoodle.jpg'),
-            fit: BoxFit.cover,
+      body: Stack(children: [
+        Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/mydoodle.jpg'),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    if (showForm)
-                      SlideTransition(
-                        position: _animation,
-                        child: _buildForm(),
-                      )
-                    else if (data.isEmpty)
-                      const CircularProgressIndicator()
-                    else if (data.containsKey('error'))
-                      Text('Error: ${data['error']}')
-                    else if (data['name'] == null || data['name'].isEmpty)
-                      Center(
-                        child: DeviceEmpty(onAddDevice: _toggleFormVisibility),
-                      )
-                    else
-                      DeviceNotEmpty(devices: devices),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+        SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              if (showForm)
+                SlideTransition(
+                  position: _animation,
+                  child: _buildForm(),
+                )
+              else if (data.isEmpty)
+                const CircularProgressIndicator()
+              else if (data.containsKey('error'))
+                Text('Error: ${data['error']}')
+              else if (data['name'] == null || data['name'].isEmpty)
+                SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        DeviceEmpty(onAddDevice: _toggleFormVisibility)
+                      ]),
+                )
+              else
+                DeviceNotEmpty(devices: devices),
+            ],
+          ),
+        )
+      ]),
     );
   }
 
   Widget _buildForm() {
-    return Card(
-      color: Colors.white,
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
-            ),
-            TextField(
-              controller: _ageController,
-              decoration: const InputDecoration(labelText: 'Age'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _addDevice,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      padding: const EdgeInsets.all(40),
+      child: Card(
+        color: Colors.white,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(children: [
+                const Text(
+                  'Tambah Perangkat',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ]),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: const Color(
+                        0xFFE9F7EF), // Warna latar belakang hijau muda
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.info, color: Colors.black), // Ikon info
+                          SizedBox(width: 8.0),
+                          Text(
+                            'Perhatian',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.0),
+                      Text(
+                        '• pastikan menambahkan nama perangkat anda dengan lengkap, merk dan type',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      SizedBox(height: 4.0),
+                      Text('• pastikan tahun produksi laptop anda dengan benar',
+                          style: TextStyle(fontSize: 13)),
+                      SizedBox(height: 4.0),
+                      Text(
+                          '• data perangkat yang anda inputkan akan menjadi pertimbangan kami untuk menentukan metode perbaikan',
+                          style: TextStyle(fontSize: 13)),
+                    ],
+                  ),
                 ),
               ),
-              child: const Text('Submit'),
-            ),
-          ],
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                child: TextFormField(
+                  controller: _nameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Nama perangkat wajib diisi!';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Nama Perangkat',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                child: TextFormField(
+                  controller: _nameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Tahun perangkat wajib diisi!';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Tahun Perangkat',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Drive Link',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _addDevice,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );
