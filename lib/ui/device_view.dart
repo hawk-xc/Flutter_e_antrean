@@ -1,6 +1,10 @@
+// device_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/controller/device_controller.dart';
 import 'package:flutter_e_service_app/model/device_model.dart';
+import 'package:flutter_e_service_app/ui/device_particle/deviceEmpty.dart';
+import 'package:flutter_e_service_app/ui/device_particle/deviceNotEmpty.dart';
+import 'package:flutter_e_service_app/ui/device_particle/deviceForm.dart'; // Import the new DeviceForm widget
 
 class DeviceView extends StatefulWidget {
   const DeviceView({super.key});
@@ -12,6 +16,7 @@ class DeviceView extends StatefulWidget {
 class _DeviceViewState extends State<DeviceView>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   List<DeviceModel> devices = [];
 
@@ -77,6 +82,10 @@ class _DeviceViewState extends State<DeviceView>
       return; // Jika form tidak valid, hentikan eksekusi fungsi
     }
 
+    setState(() {
+      isLoading = true;
+    });
+
     // Replace with actual user ID retrieval logic
     String userId = '1';
     String deviceName = _nameController.text;
@@ -85,6 +94,10 @@ class _DeviceViewState extends State<DeviceView>
 
     bool success = await DeviceController()
         .store(userId, deviceName, deviceYear, driveLink);
+
+    setState(() {
+      isLoading = false;
+    });
 
     if (success) {
       // Optionally, you can fetch the updated device list from the server
@@ -146,7 +159,15 @@ class _DeviceViewState extends State<DeviceView>
               if (showForm)
                 SlideTransition(
                   position: _animation,
-                  child: _buildForm(),
+                  child: DeviceForm(
+                    formKey: _formKey,
+                    nameController: _nameController,
+                    yearController: _yearController,
+                    driveLinkController: _driveLinkController,
+                    isLoading: isLoading,
+                    toggleFormVisibility: _toggleFormVisibility,
+                    addDevice: _addDevice,
+                  ),
                 )
               else if (devices.isEmpty)
                 DeviceEmpty(onAddDevice: _toggleFormVisibility)
@@ -157,364 +178,6 @@ class _DeviceViewState extends State<DeviceView>
           ),
         )
       ]),
-    );
-  }
-
-  Widget _buildForm() {
-    return Container(
-      height: MediaQuery.of(context).size.height - 50,
-      padding: const EdgeInsets.all(40),
-      child: Card(
-        color: Colors.white,
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Row(children: [
-                  Text(
-                    'Tambah Perangkat',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ]),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE9F7EF),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.info, color: Colors.black),
-                            SizedBox(width: 8.0),
-                            Text(
-                              'Perhatian',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.0),
-                        Text(
-                          '• pastikan menambahkan nama perangkat anda dengan lengkap, merk dan type',
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        SizedBox(height: 4.0),
-                        Text(
-                            '• pastikan tahun produksi laptop anda dengan benar',
-                            style: TextStyle(fontSize: 13)),
-                        SizedBox(height: 4.0),
-                        Text(
-                            '• data perangkat yang anda inputkan akan menjadi pertimbangan kami untuk menentukan metode perbaikan',
-                            style: TextStyle(fontSize: 13)),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: TextFormField(
-                    controller: _nameController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama perangkat wajib diisi!';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Nama Perangkat',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: TextFormField(
-                    controller: _yearController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Tahun perangkat wajib diisi!';
-                      } else if (int.tryParse(value) == null) {
-                        return 'Tahun perangkat harus berupa angka';
-                      } else if (int.parse(value) > DateTime.now().year) {
-                        return 'Tahun perangkat tidak boleh melebihi tahun sekarang';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Tahun Perangkat',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: TextFormField(
-                    controller: _driveLinkController,
-                    decoration: InputDecoration(
-                      labelText: 'Drive Link',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: _toggleFormVisibility,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                          child: Text('Batalkan',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14)),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: _addDevice,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                          child: Text('Submit',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14)),
-                        ),
-                      ),
-                    ]),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class DeviceEmpty extends StatelessWidget {
-  final VoidCallback onAddDevice;
-
-  const DeviceEmpty({super.key, required this.onAddDevice});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      // color: Colors.black,
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Card(
-                color: Colors.white,
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(25, 40, 25, 40),
-                  child: Column(
-                    children: <Widget>[
-                      const Center(
-                        child: Image(
-                            image: AssetImage('assets/images/item-empty.png'),
-                            width: 300,
-                            height: 300),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 0, vertical: 60),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Hallo Users',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                            Text(
-                              'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.',
-                              textAlign: TextAlign.center,
-                            )
-                          ],
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: onAddDevice,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(335, 50),
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                            Text(
-                              'Tambah Perangkat',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ))
-          ]),
-    );
-  }
-}
-
-class DeviceNotEmpty extends StatelessWidget {
-  final List<DeviceModel> devices;
-  final VoidCallback onAddDevice;
-
-  const DeviceNotEmpty(
-      {super.key, required this.devices, required this.onAddDevice});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Card(
-          color: Colors.white,
-          elevation: 4,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(25, 15, 25, 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Total Perangkat Anda'),
-                    Text(
-                      devices.length.toString(),
-                      style: const TextStyle(
-                          fontSize: 40, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    // backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: onAddDevice,
-                  child: const Row(children: [Icon(Icons.add), Text("Tambah")]),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Card(
-          color: Colors.white,
-          elevation: 4,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: devices.isEmpty
-                ? const CircularProgressIndicator()
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: devices.length,
-                    itemBuilder: (context, index) {
-                      final device = devices[index];
-                      return GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 0, vertical: 5),
-                          decoration: BoxDecoration(
-                              color: const Color(0xFFEFF0F9),
-                              borderRadius: BorderRadius.circular(8)),
-                          child: ListTile(
-                            leading: const CircleAvatar(
-                              child: Icon(Icons.devices),
-                            ),
-                            title: Text(
-                              device.deviceName,
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(children: [
-                                  const Icon(
-                                    Icons.person,
-                                    size: 12,
-                                  ),
-                                  Text(
-                                    device.userName.toString(),
-                                    style: const TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ]),
-                                // Text('Year: ${device.deviceYear}'),
-                                Row(children: [
-                                  const Icon(Icons.access_alarm, size: 12),
-                                  Text(
-                                    device.createdAtDiff.toString(),
-                                    style: const TextStyle(fontSize: 10),
-                                  ),
-                                ]),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-          ),
-        ),
-      ],
     );
   }
 }
