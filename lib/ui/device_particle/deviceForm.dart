@@ -150,7 +150,7 @@ class DeviceForm extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     isLoading
-                        ? CircularProgressIndicator()
+                        ? const CircularProgressIndicator()
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -158,18 +158,57 @@ class DeviceForm extends StatelessWidget {
                               ElevatedButton(
                                 onPressed: toggleFormVisibility,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
+                                  backgroundColor: Colors.blue.shade200,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
                                 child: Padding(
-                                  padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                                  child: Text('Batalkan',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 14)),
+                                  padding: isEditing
+                                      ? const EdgeInsets.fromLTRB(2, 12, 2, 12)
+                                      : const EdgeInsets.fromLTRB(
+                                          25, 12, 25, 12),
+                                  child: const Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.arrow_back,
+                                        color: Colors.white,
+                                      ),
+                                      Text('Batalkan',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14))
+                                    ],
+                                  ),
                                 ),
                               ),
+                              Container(
+                                  child: isEditing
+                                      ? ElevatedButton(
+                                          onPressed: toggleFormVisibility,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                          ),
+                                          child: const Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                2, 12, 2, 12),
+                                            child: Row(children: [
+                                              Icon(
+                                                Icons.delete_outline,
+                                                color: Colors.white,
+                                              ),
+                                              Text('Hapus',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14)),
+                                            ]),
+                                          ),
+                                        )
+                                      : null),
                               ElevatedButton(
                                 onPressed: addDevice,
                                 style: ElevatedButton.styleFrom(
@@ -179,11 +218,19 @@ class DeviceForm extends StatelessWidget {
                                   ),
                                 ),
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(25, 12, 25, 12),
-                                  child: Text(isEditing ? 'Update' : 'Submit',
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 14)),
+                                  padding: isEditing
+                                      ? const EdgeInsets.fromLTRB(2, 12, 2, 12)
+                                      : const EdgeInsets.fromLTRB(
+                                          25, 12, 25, 12),
+                                  child: Row(children: [
+                                    const Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                    ),
+                                    Text(isEditing ? 'Ubah' : 'Simpan',
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 14)),
+                                  ]),
                                 ),
                               ),
                             ],
