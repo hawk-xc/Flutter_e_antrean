@@ -174,6 +174,53 @@ class _DeviceViewState extends State<DeviceView>
     }
   }
 
+  Future<void> _deleteDevice() async {
+    if (editingDevice != null) {
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        await DeviceController().destroy(editingDevice!.id);
+        await _getDeviceData();
+        _toggleFormVisibility();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 5),
+                Text('Berhasil menghapus perangkat!'),
+              ],
+            ),
+          ),
+        );
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Icon(
+                  Icons.cancel,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 5),
+                Text('Gagal menghapus perangkat!'),
+              ],
+            ),
+          ),
+        );
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,6 +249,7 @@ class _DeviceViewState extends State<DeviceView>
                     toggleFormVisibility: _toggleFormVisibility,
                     addDevice: _addOrEditDevice,
                     isEditing: isEditing,
+                    deleteDevice: _deleteDevice,
                   ),
                 )
               else if (devices.isEmpty)

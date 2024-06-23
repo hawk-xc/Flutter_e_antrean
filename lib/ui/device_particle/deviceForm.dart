@@ -9,6 +9,7 @@ class DeviceForm extends StatelessWidget {
   final VoidCallback toggleFormVisibility;
   final VoidCallback addDevice;
   final bool isEditing;
+  final VoidCallback? deleteDevice;
 
   // ignore: use_super_parameters
   const DeviceForm({
@@ -20,6 +21,7 @@ class DeviceForm extends StatelessWidget {
     required this.toggleFormVisibility,
     required this.addDevice,
     required this.isEditing,
+    this.deleteDevice,
     Key? key,
   }) : super(key: key);
 
@@ -185,7 +187,7 @@ class DeviceForm extends StatelessWidget {
                               Container(
                                   child: isEditing
                                       ? ElevatedButton(
-                                          onPressed: toggleFormVisibility,
+                                          onPressed: deleteDevice,
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.red,
                                             shape: RoundedRectangleBorder(

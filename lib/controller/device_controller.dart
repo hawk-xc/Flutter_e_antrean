@@ -85,4 +85,16 @@ class DeviceController {
       return false;
     }
   }
+
+  Future<void> destroy(int id) async {
+    try {
+      final response = await _apiClient.delete('device/$id');
+      if (response.statusCode != 200) {
+        throw Exception('Failed to delete device');
+      }
+    } catch (e) {
+      // Log error if necessary
+      throw Exception('Failed to delete device: $e');
+    }
+  }
 }
