@@ -21,6 +21,21 @@ class DeviceController {
     }
   }
 
+  Future<bool> show(String id) async {
+    try {
+      final response = await _apiClient.get('device/$id');
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print('Error: $e');
+      return false;
+    }
+  }
+
   Future<bool> store(String userId, String deviceName, String deviceYear,
       String driveLink) async {
     try {
@@ -35,11 +50,37 @@ class DeviceController {
         // print(response.data['data']);
         return true;
       } else {
+        // ignore: avoid_print
         print('Error: ${response.statusCode} - ${response.data}');
         return false;
       }
     } catch (e) {
       // print('Registration error: $e');
+      // ignore: avoid_print
+      print('Error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> update(String id, String userId, String deviceName,
+      String deviceYear, String driveLink) async {
+    try {
+      final response = await _apiClient.put('device/$id', {
+        'user_id': userId,
+        'device_name': deviceName,
+        'device_year': deviceYear,
+        'drive_link': driveLink,
+      });
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        // ignore: avoid_print
+        print('Error: ${response.statusCode} - ${response.data}');
+        return false;
+      }
+    } catch (e) {
+      // ignore: avoid_print
       print('Error: $e');
       return false;
     }

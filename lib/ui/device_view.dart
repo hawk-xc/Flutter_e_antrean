@@ -1,4 +1,3 @@
-// device_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/controller/device_controller.dart';
 import 'package:flutter_e_service_app/model/device_model.dart';
@@ -21,6 +20,8 @@ class _DeviceViewState extends State<DeviceView>
   List<DeviceModel> devices = [];
 
   bool showForm = false;
+  bool isEditing = false;
+  DeviceModel? editingDevice;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _yearController = TextEditingController();
@@ -62,80 +63,113 @@ class _DeviceViewState extends State<DeviceView>
     super.dispose();
   }
 
-  void _toggleFormVisibility() {
+  void _toggleFormVisibility({bool editing = false, DeviceModel? device}) {
     setState(() {
       if (showForm) {
         _animationController.reverse().then((_) {
           setState(() {
             showForm = false;
+            isEditing = false;
+            editingDevice = null;
           });
         });
       } else {
+        if (editing && device != null) {
+          _populateFormForEditing(device);
+        }
         showForm = true;
+        isEditing = editing;
         _animationController.forward();
       }
     });
   }
 
-  Future<void> _addDevice() async {
+  void _populateFormForEditing(DeviceModel device) {
+    _nameController.text = device.deviceName;
+    _yearController.text = device.deviceYear;
+    _driveLinkController.text = device.driveLink ?? '';
+    editingDevice = device;
+  }
+
+  Future<void> _addOrEditDevice() async {
     if (!_formKey.currentState!.validate()) {
-      return; // Jika form tidak valid, hentikan eksekusi fungsi
+      return; // If the form is not valid, stop execution
     }
 
     setState(() {
       isLoading = true;
     });
 
-    // Replace with actual user ID retrieval logic
     String userId = '1';
     String deviceName = _nameController.text;
     String deviceYear = _yearController.text;
     String driveLink = _driveLinkController.text;
+    bool success;
 
-    bool success = await DeviceController()
-        .store(userId, deviceName, deviceYear, driveLink);
+    if (isEditing && editingDevice != null) {
+      success = await DeviceController().update(
+        editingDevice!.id.toString(),
+        userId,
+        deviceName,
+        deviceYear,
+        driveLink,
+      );
+    } else {
+      success = await DeviceController().store(
+        userId,
+        deviceName,
+        deviceYear,
+        driveLink,
+      );
+    }
 
     setState(() {
       isLoading = false;
     });
 
     if (success) {
-      // Optionally, you can fetch the updated device list from the server
       await _getDeviceData();
       _toggleFormVisibility();
       _formKey.currentState!.reset();
       _nameController.clear();
       _yearController.clear();
       _driveLinkController.clear();
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Row(children: [
-          Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-            child: const Icon(
-              Icons.check_circle,
-              color: Colors.white,
-            ),
+          content: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                child: const Icon(
+                  Icons.check_circle,
+                  color: Colors.white,
+                ),
+              ),
+              Text(isEditing
+                  ? 'Berhasil memperbarui data perangkat!'
+                  : 'Berhasil menambahkan data perangkat!'),
+            ],
           ),
-          const Text('Berhasil menambahkan data Perangkat!')
-        ])),
+        ),
       );
     } else {
-      // Handle the error, e.g., show a message to the user
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Row(children: [
-          Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-            child: const Icon(
-              Icons.cancel,
-              color: Colors.white,
-            ),
+          content: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                child: const Icon(
+                  Icons.cancel,
+                  color: Colors.white,
+                ),
+              ),
+              Text(isEditing
+                  ? 'Galat memperbarui data perangkat!'
+                  : 'Galat menambahkan data perangkat!'),
+            ],
           ),
-          const Text('Galat menambahkan data Perangkat!')
-        ])),
+        ),
       );
     }
   }
@@ -166,14 +200,19 @@ class _DeviceViewState extends State<DeviceView>
                     driveLinkController: _driveLinkController,
                     isLoading: isLoading,
                     toggleFormVisibility: _toggleFormVisibility,
-                    addDevice: _addDevice,
+                    addDevice: _addOrEditDevice,
+                    isEditing: isEditing,
                   ),
                 )
               else if (devices.isEmpty)
-                DeviceEmpty(onAddDevice: _toggleFormVisibility)
+                DeviceEmpty(onAddDevice: () => _toggleFormVisibility())
               else
                 DeviceNotEmpty(
-                    devices: devices, onAddDevice: _toggleFormVisibility),
+                  devices: devices,
+                  onAddDevice: () => _toggleFormVisibility(),
+                  onEditDevice: (device) =>
+                      _toggleFormVisibility(editing: true, device: device),
+                ),
             ],
           ),
         )

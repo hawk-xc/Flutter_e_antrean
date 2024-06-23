@@ -4,9 +4,14 @@ import 'package:flutter_e_service_app/model/device_model.dart';
 class DeviceNotEmpty extends StatelessWidget {
   final List<DeviceModel> devices;
   final VoidCallback onAddDevice;
+  final Function(DeviceModel) onEditDevice;
 
-  const DeviceNotEmpty(
-      {super.key, required this.devices, required this.onAddDevice});
+  const DeviceNotEmpty({
+    super.key,
+    required this.devices,
+    required this.onAddDevice,
+    required this.onEditDevice,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,6 @@ class DeviceNotEmpty extends StatelessWidget {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    // backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -62,7 +66,7 @@ class DeviceNotEmpty extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final device = devices[index];
                       return GestureDetector(
-                        onTap: () {},
+                        onTap: () => onEditDevice(device),
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           margin: const EdgeInsets.symmetric(
@@ -95,7 +99,6 @@ class DeviceNotEmpty extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ]),
-                                // Text('Year: ${device.deviceYear}'),
                                 Row(children: [
                                   const Icon(Icons.access_alarm, size: 12),
                                   Text(
