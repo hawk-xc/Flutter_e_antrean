@@ -32,13 +32,15 @@ class DeviceController {
       });
 
       if (response.statusCode == 200) {
-        print(response.data['data']);
+        // print(response.data['data']);
         return true;
       } else {
+        print('Error: ${response.statusCode} - ${response.data}');
         return false;
       }
     } catch (e) {
       // print('Registration error: $e');
+      print('Error: $e');
       return false;
     }
   }

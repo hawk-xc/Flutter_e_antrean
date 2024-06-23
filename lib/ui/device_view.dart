@@ -151,7 +151,8 @@ class _DeviceViewState extends State<DeviceView>
               else if (devices.isEmpty)
                 DeviceEmpty(onAddDevice: _toggleFormVisibility)
               else
-                DeviceNotEmpty(devices: devices),
+                DeviceNotEmpty(
+                    devices: devices, onAddDevice: _toggleFormVisibility),
             ],
           ),
         )
@@ -379,10 +380,10 @@ class DeviceEmpty extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const <Widget>[
+                          children: <Widget>[
                             Icon(
                               Icons.add,
                               color: Colors.white,
@@ -404,8 +405,10 @@ class DeviceEmpty extends StatelessWidget {
 
 class DeviceNotEmpty extends StatelessWidget {
   final List<DeviceModel> devices;
+  final VoidCallback onAddDevice;
 
-  const DeviceNotEmpty({super.key, required this.devices});
+  const DeviceNotEmpty(
+      {super.key, required this.devices, required this.onAddDevice});
 
   @override
   Widget build(BuildContext context) {
@@ -440,7 +443,7 @@ class DeviceNotEmpty extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: onAddDevice,
                   child: const Row(children: [Icon(Icons.add), Text("Tambah")]),
                 ),
               ],
