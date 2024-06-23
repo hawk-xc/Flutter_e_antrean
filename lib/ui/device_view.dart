@@ -134,6 +134,7 @@ class _DeviceViewState extends State<DeviceView>
       _nameController.clear();
       _yearController.clear();
       _driveLinkController.clear();
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -153,6 +154,7 @@ class _DeviceViewState extends State<DeviceView>
         ),
       );
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -184,6 +186,15 @@ class _DeviceViewState extends State<DeviceView>
         await DeviceController().destroy(editingDevice!.id);
         await _getDeviceData();
         _toggleFormVisibility();
+
+        // Reset the form and clear the TextEditingControllers
+        _formKey.currentState!.reset();
+        _nameController.clear();
+        _yearController.clear();
+        _driveLinkController.clear();
+
+        // Show a success snackbar
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Row(
@@ -192,13 +203,15 @@ class _DeviceViewState extends State<DeviceView>
                   Icons.check_circle,
                   color: Colors.white,
                 ),
-                SizedBox(width: 5),
-                Text('Berhasil menghapus perangkat!'),
+                SizedBox(width: 8.0),
+                Text('Berhasil menghapus data perangkat!'),
               ],
             ),
           ),
         );
       } catch (error) {
+        // Handle error (show error message, etc.)
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Row(
@@ -207,8 +220,8 @@ class _DeviceViewState extends State<DeviceView>
                   Icons.cancel,
                   color: Colors.white,
                 ),
-                SizedBox(width: 5),
-                Text('Gagal menghapus perangkat!'),
+                SizedBox(width: 8.0),
+                Text('Galat menghapus data perangkat!'),
               ],
             ),
           ),
