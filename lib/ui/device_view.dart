@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_e_service_app/controller/device_controller.dart';
 import 'package:flutter_e_service_app/model/device_model.dart';
 
@@ -13,17 +11,14 @@ class DeviceView extends StatefulWidget {
 
 class _DeviceViewState extends State<DeviceView>
     with SingleTickerProviderStateMixin {
-  Map<String, dynamic> data = {
-    'name': '',
-    'age': 30,
-  };
+  final _formKey = GlobalKey<FormState>();
 
   List<DeviceModel> devices = [];
 
   bool showForm = false;
 
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _yearController = TextEditingController();
   final TextEditingController _driveLinkController = TextEditingController();
 
   late AnimationController _animationController;
@@ -57,7 +52,7 @@ class _DeviceViewState extends State<DeviceView>
   void dispose() {
     _animationController.dispose();
     _nameController.dispose();
-    _ageController.dispose();
+    _yearController.dispose();
     _driveLinkController.dispose();
     super.dispose();
   }
@@ -78,10 +73,14 @@ class _DeviceViewState extends State<DeviceView>
   }
 
   Future<void> _addDevice() async {
+    if (!_formKey.currentState!.validate()) {
+      return; // Jika form tidak valid, hentikan eksekusi fungsi
+    }
+
     // Replace with actual user ID retrieval logic
     String userId = '1';
     String deviceName = _nameController.text;
-    String deviceYear = _ageController.text;
+    String deviceYear = _yearController.text;
     String driveLink = _driveLinkController.text;
 
     bool success = await DeviceController()
@@ -91,6 +90,10 @@ class _DeviceViewState extends State<DeviceView>
       // Optionally, you can fetch the updated device list from the server
       await _getDeviceData();
       _toggleFormVisibility();
+      _formKey.currentState!.reset();
+      _nameController.clear();
+      _yearController.clear();
+      _driveLinkController.clear();
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -145,20 +148,8 @@ class _DeviceViewState extends State<DeviceView>
                   position: _animation,
                   child: _buildForm(),
                 )
-              else if (data.isEmpty)
-                const CircularProgressIndicator()
-              else if (data.containsKey('error'))
-                Text('Error: ${data['error']}')
-              else if (data['name'] == null || data['name'].isEmpty)
-                SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        DeviceEmpty(onAddDevice: _toggleFormVisibility)
-                      ]),
-                )
+              else if (devices.isEmpty)
+                DeviceEmpty(onAddDevice: _toggleFormVisibility)
               else
                 DeviceNotEmpty(devices: devices),
             ],
@@ -180,145 +171,153 @@ class _DeviceViewState extends State<DeviceView>
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Row(children: [
-                Text(
-                  'Tambah Perangkat',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ]),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Row(children: [
+                  Text(
+                    'Tambah Perangkat',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ]),
+                Padding(
                   padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: const Color(
-                        0xFFE9F7EF), // Warna latar belakang hijau muda
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.info, color: Colors.black), // Ikon info
-                          SizedBox(width: 8.0),
-                          Text(
-                            'Perhatian',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
+                  child: Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE9F7EF),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.info, color: Colors.black),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Perhatian',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          '• pastikan menambahkan nama perangkat anda dengan lengkap, merk dan type',
+                          style: TextStyle(fontSize: 13),
+                        ),
+                        SizedBox(height: 4.0),
+                        Text(
+                            '• pastikan tahun produksi laptop anda dengan benar',
+                            style: TextStyle(fontSize: 13)),
+                        SizedBox(height: 4.0),
+                        Text(
+                            '• data perangkat yang anda inputkan akan menjadi pertimbangan kami untuk menentukan metode perbaikan',
+                            style: TextStyle(fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: TextFormField(
+                    controller: _nameController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Nama perangkat wajib diisi!';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Nama Perangkat',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: TextFormField(
+                    controller: _yearController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Tahun perangkat wajib diisi!';
+                      } else if (int.tryParse(value) == null) {
+                        return 'Tahun perangkat harus berupa angka';
+                      } else if (int.parse(value) > DateTime.now().year) {
+                        return 'Tahun perangkat tidak boleh melebihi tahun sekarang';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Tahun Perangkat',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: TextFormField(
+                    controller: _driveLinkController,
+                    decoration: InputDecoration(
+                      labelText: 'Drive Link',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: _toggleFormVisibility,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        '• pastikan menambahkan nama perangkat anda dengan lengkap, merk dan type',
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      SizedBox(height: 4.0),
-                      Text('• pastikan tahun produksi laptop anda dengan benar',
-                          style: TextStyle(fontSize: 13)),
-                      SizedBox(height: 4.0),
-                      Text(
-                          '• data perangkat yang anda inputkan akan menjadi pertimbangan kami untuk menentukan metode perbaikan',
-                          style: TextStyle(fontSize: 13)),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                child: TextFormField(
-                  controller: _nameController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Nama perangkat wajib diisi!';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Nama Perangkat',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                child: TextFormField(
-                  controller: _ageController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Tahun perangkat wajib diisi!';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Tahun Perangkat',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                child: TextFormField(
-                  controller: _driveLinkController,
-                  decoration: InputDecoration(
-                    labelText: 'Drive Link',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _toggleFormVisibility, // Update this line
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+                          child: Text('Batalkan',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 14)),
                         ),
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                        child: Text('Batalkan',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 14)),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: _addDevice,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                      ElevatedButton(
+                        onPressed: _addDevice,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+                          child: Text('Submit',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 14)),
                         ),
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                        child: Text('Submit',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 14)),
-                      ),
-                    ),
-                  ]),
-            ],
+                    ]),
+              ],
+            ),
           ),
         ),
       ),
@@ -333,66 +332,73 @@ class DeviceEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-      Card(
-          color: Colors.white,
-          elevation: 4,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(25, 40, 25, 40),
-            child: Column(
-              children: <Widget>[
-                const Center(
-                  child: Image(
-                      image: AssetImage('assets/images/item-empty.png'),
-                      width: 300,
-                      height: 300),
-                ),
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 0, vertical: 60),
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+    return SizedBox(
+      // color: Colors.black,
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Card(
+                color: Colors.white,
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(25, 40, 25, 40),
+                  child: Column(
                     children: <Widget>[
-                      Text(
-                        'Hallo Users',
-                        style: TextStyle(fontSize: 30),
+                      const Center(
+                        child: Image(
+                            image: AssetImage('assets/images/item-empty.png'),
+                            width: 300,
+                            height: 300),
                       ),
-                      Text(
-                        'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.',
-                        textAlign: TextAlign.center,
-                      )
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 0, vertical: 60),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Hallo Users',
+                              style: TextStyle(fontSize: 30),
+                            ),
+                            Text(
+                              'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.',
+                              textAlign: TextAlign.center,
+                            )
+                          ],
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: onAddDevice,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(335, 50),
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const <Widget>[
+                            Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              'Tambah Perangkat',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: onAddDevice,
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(335, 50),
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const <Widget>[
-                      Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-                      Text(
-                        'Tambah Perangkat',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ))
-    ]);
+                ))
+          ]),
+    );
   }
 }
 

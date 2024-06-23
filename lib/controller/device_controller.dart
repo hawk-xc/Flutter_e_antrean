@@ -32,7 +32,7 @@ class DeviceController {
       });
 
       if (response.statusCode == 200) {
-        print(response.data);
+        print(response.data['data']);
         return true;
       } else {
         return false;
