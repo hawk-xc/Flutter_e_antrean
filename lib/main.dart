@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_e_service_app/ui/login_view.dart';
 import 'package:flutter_e_service_app/ui/dashboard_view.dart';
 import 'package:flutter_e_service_app/ui/profile_view.dart';
+import 'package:flutter_e_service_app/ui/device_view.dart';
 import 'package:flutter_e_service_app/ui/splash_screen_view.dart';
 
 void main() => runApp(
@@ -12,8 +13,8 @@ void main() => runApp(
           fontFamily: 'Poppins',
         ),
         // home: const MainPage(),
-        home: const SplashScreen(),
-        // home: const LoginView(),
+        // home: const SplashScreen(),
+        home: DeviceView(),
       ),
     );
 
@@ -27,7 +28,7 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   List<Widget> body = const [
     DashboardView(),
-    Icon(Icons.laptop),
+    DeviceView(),
     Icon(Icons.person),
     ProfileView(),
   ];
