@@ -31,10 +31,21 @@ class _DeviceViewState extends State<DeviceView>
   late Animation<Offset> _animation;
 
   Future<void> _getDeviceData() async {
-    var response = await DeviceController().index();
-    setState(() {
-      devices = response;
-    });
+    try {
+      var response = await DeviceController().index();
+      setState(() {
+        devices = response;
+      });
+    } catch (e) {
+      setState(() {
+        devices = [];
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load devices: $e'),
+        ),
+      );
+    }
   }
 
   @override
