@@ -20,10 +20,23 @@ class ApiClient {
   Future<Map<String, dynamic>> _getHeaders() async {
     final token = await _userInfo.getToken();
     return {
-      // 'Authorization': 'Bearer $token',
-      'Authorization':
-          'Bearer 2|H0OEPtrPor4anQPXelHTs44Dk7s3Rpq9JP6SiglC4b6f6d16',
+      'Authorization': 'Bearer $token',
+      // 'Authorization':
+      //     'Bearer 2|H0OEPtrPor4anQPXelHTs44Dk7s3Rpq9JP6SiglC4b6f6d16',
     };
+  }
+
+  Future<Response> getUserData() async {
+    try {
+      final headers = await _getHeaders();
+      final response = await dio.get(
+        'user',
+        options: Options(headers: headers),
+      );
+      return response;
+    } on DioError catch (e) {
+      throw Exception(e.message);
+    }
   }
 
   // Metode untuk melakukan permintaan GET
