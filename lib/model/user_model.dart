@@ -1,8 +1,10 @@
 class UserModel {
   final String email;
+  // final String username;
   final String password;
 
   UserModel({
+    // required this.username,
     required this.email,
     required this.password,
   });
@@ -20,6 +22,7 @@ class UserModel {
     return UserModel(
       email: json['email'],
       password: json['password'],
+      // username: json['username'],
     );
   }
 }

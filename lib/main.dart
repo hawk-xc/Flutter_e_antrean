@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_e_service_app/ui/login_view.dart';
-import 'package:flutter_e_service_app/ui/dashboard_view.dart';
+import 'package:flutter_e_service_app/ui/main_dashboard.dart';
 import 'package:flutter_e_service_app/ui/profile_view.dart';
 import 'package:flutter_e_service_app/ui/splash_screen_view.dart';
+import 'package:flutter_e_service_app/ui/ticket_view.dart';
 
 void main() => runApp(
       MaterialApp(
@@ -12,6 +12,11 @@ void main() => runApp(
           fontFamily: 'Poppins',
         ),
         // home: const MainPage(),
+        // home: const DashboardData(),
+        // home: MainDashboard(),
+        // home: const DashboardView(),
+        // home: const TicketNotEmpty(),
+        // home: const TicketView(),
         home: const SplashScreen(),
         // home: const LoginView(),
       ),
@@ -26,9 +31,11 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> {
   List<Widget> body = const [
-    DashboardView(),
+    // DashboardView(),
+    // DashboardData(),
+    MainDashboard(),
     Icon(Icons.laptop),
-    Icon(Icons.person),
+    TicketView(),
     ProfileView(),
   ];
 
@@ -66,7 +73,7 @@ class MainPageState extends State<MainPage> {
                 Icons.layers,
                 size: 25,
               ),
-              label: 'Papers',
+              label: 'Antrean',
             ),
             BottomNavigationBarItem(
               icon: Icon(

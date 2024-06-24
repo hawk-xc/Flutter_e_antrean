@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_e_service_app/helpers/validation_helpers.dart';
 import '/controller/register_controller.dart';
 
 class RegisterView extends StatefulWidget {
@@ -128,12 +129,8 @@ class _RegisterViewState extends State<RegisterView> {
                                       horizontal: 20, vertical: 15),
                                   child: TextFormField(
                                     controller: _nameController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Nama tidak boleh kosong!';
-                                      }
-                                      return null;
-                                    },
+                                    validator: (value) =>
+                                        ValidatorHelpers.required(value),
                                     decoration: InputDecoration(
                                       labelText: 'Nama',
                                       border: OutlineInputBorder(
@@ -147,15 +144,17 @@ class _RegisterViewState extends State<RegisterView> {
                                       horizontal: 20, vertical: 15),
                                   child: TextFormField(
                                     controller: _emailController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Email tidak boleh kosong!';
-                                      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                          .hasMatch(value)) {
-                                        return 'Masukkan Email yang valid!';
-                                      }
-                                      return null;
-                                    },
+                                    validator: (value) =>
+                                        ValidatorHelpers.email(value),
+                                    // validator: (value) {
+                                    //   if (value == null || value.isEmpty) {
+                                    //     return 'Email tidak boleh kosong!';
+                                    //   } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                    //       .hasMatch(value)) {
+                                    //     return 'Masukkan Email yang valid!';
+                                    //   }
+                                    //   return null;
+                                    // },
                                     decoration: InputDecoration(
                                       labelText: 'Email',
                                       border: OutlineInputBorder(
@@ -169,14 +168,8 @@ class _RegisterViewState extends State<RegisterView> {
                                       horizontal: 20, vertical: 15),
                                   child: TextFormField(
                                     controller: _passwordController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Kata Sandi tidak boleh kosong!';
-                                      } else if (value.length < 8) {
-                                        return 'Kata Sandi minimal 8 karakter!';
-                                      }
-                                      return null;
-                                    },
+                                    validator: (value) =>
+                                        ValidatorHelpers.password(value),
                                     obscureText: _isObscure,
                                     decoration: InputDecoration(
                                       labelText: 'Katasandi',

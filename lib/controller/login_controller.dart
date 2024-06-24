@@ -1,4 +1,3 @@
-// import 'package:dio/dio.dart';
 import '../model/user_model.dart';
 import '../helpers/api_client.dart';
 import '../helpers/user_info.dart';
@@ -9,21 +8,19 @@ class LoginController {
   // Fungsi untuk memvalidasi kredensial login dengan API
   Future<bool> login(UserModel user) async {
     try {
+      // Mengirim permintaan POST ke API untuk login
       final response = await _apiClient.post('/login', user.toJson());
 
-      // print(response);
-
+      // Memeriksa status respons API
       if (response.statusCode == 200) {
-        // Memeriksa apakah login berhasil berdasarkan respons API
         final jsonData = response.data;
         final token =
             jsonData['token']; // Menyesuaikan dengan struktur API Anda
+        final username = jsonData['username'];
 
-        // Menyimpan token dan email menggunakan SharedPreferences
+        // Menyimpan token dan username menggunakan SharedPreferences
         await UserInfo().setToken(token);
-
-        // Menyimpan token dan email menggunakan SharedPreferences
-        // await UserInfo().setEmail(email);
+        await UserInfo().setUsername(username);
 
         return true;
       } else {
@@ -32,7 +29,7 @@ class LoginController {
       }
     } catch (e) {
       // Menangani kesalahan (misalnya, masalah jaringan)
-      // print('Login error: $e');
+      print('Login error: $e');
       return false;
     }
   }

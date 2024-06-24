@@ -1,57 +1,49 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-// ignore: constant_identifier_names
 const String TOKEN = "token"; // Konstanta untuk kunci token
-// ignore: constant_identifier_names
 const String EMAIL = "email"; // Konstanta untuk kunci email pengguna
-const String USERNAME = "username"; // Konstanta untuk kunci email pengguna
+const String USERNAME = "username"; // Konstanta untuk kunci username pengguna
 
 class UserInfo {
-  // Metode untuk menyimpan token ke shared preferences
+  // Menyimpan token ke shared preferences
   Future<void> setToken(String value) async {
-    final SharedPreferences pref = await SharedPreferences
-        .getInstance(); // Mendapatkan instance shared preferences
-    await pref.setString(TOKEN, value); // Menyimpan token sebagai string
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString(TOKEN, value);
   }
 
+  // Menyimpan username ke shared preferences
   Future<void> setUsername(String value) async {
-    final SharedPreferences pref = await SharedPreferences
-        .getInstance(); // Mendapatkan instance shared preferences
-    await pref.setString(
-        USERNAME, value); // Menyimpan nama pengguna sebagai string
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString(USERNAME, value);
   }
 
+  // Mengambil username dari shared preferences
   Future<String?> getUsername() async {
-    final SharedPreferences pref = await SharedPreferences
-        .getInstance(); // Mendapatkan instance shared preferences
-    return pref.getString(USERNAME); // Mengambil nama pengguna yang disimpan
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString(USERNAME);
   }
 
-  // Metode untuk mengambil token dari shared preferences
+  // Mengambil token dari shared preferences
   Future<String?> getToken() async {
-    final SharedPreferences pref = await SharedPreferences
-        .getInstance(); // Mendapatkan instance shared preferences
-    return pref.getString(TOKEN); // Mengambil token yang disimpan
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString(TOKEN);
   }
 
-  // Metode untuk menyimpan email pengguna ke shared preferences
+  // Menyimpan email pengguna ke shared preferences
   Future<void> setEmail(String value) async {
-    final SharedPreferences pref = await SharedPreferences
-        .getInstance(); // Mendapatkan instance shared preferences
-    await pref.setString(EMAIL, value); // Menyimpan email sebagai string
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString(EMAIL, value);
   }
 
-  // Metode untuk mengambil email pengguna dari shared preferences
+  // Mengambil email pengguna dari shared preferences
   Future<String?> getEmail() async {
-    final SharedPreferences pref = await SharedPreferences
-        .getInstance(); // Mendapatkan instance shared preferences
-    return pref.getString(EMAIL); // Mengambil email yang disimpan
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString(EMAIL);
   }
 
-  // Metode untuk menghapus semua data dari shared preferences (logout)
+  // Menghapus semua data dari shared preferences (logout)
   Future<void> logout() async {
-    final SharedPreferences pref = await SharedPreferences
-        .getInstance(); // Mendapatkan instance shared preferences
-    await pref.clear(); // Menghapus semua data yang disimpan
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.clear();
   }
 }
