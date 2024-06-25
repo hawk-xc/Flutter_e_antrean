@@ -1,7 +1,7 @@
 // import 'package:dio/dio.dart';
-import '../model/user_model.dart';
-import '../helpers/api_client.dart';
-import '../helpers/user_info.dart';
+import 'package:flutter_e_service_app/model/user_model.dart';
+import 'package:flutter_e_service_app/helpers/api_client.dart';
+import 'package:flutter_e_service_app/helpers/user_info.dart';
 
 class LoginController {
   final ApiClient _apiClient = ApiClient();
