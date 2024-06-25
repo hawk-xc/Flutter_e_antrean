@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/helpers/user_info.dart';
+import 'package:flutter_e_service_app/ui/timeline.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -31,107 +32,135 @@ class _DashboardViewState extends State<DashboardView> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/mydoodle.jpg'),
+            image: AssetImage('assets/images/mydoodle.jpg'), // Background image
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                if (_username == null)
-                  const CircularProgressIndicator()
-                else if (_username!.isEmpty)
-                  DashboardEmpty() // Tampilan ketika data username kosong
-                else
-                  DashboardNotEmpty(
-                      username:
-                          _username!), // Tampilan ketika data username ada
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class DashboardEmpty extends StatelessWidget {
-  const DashboardEmpty({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        child: Card(
-          color: Colors.white,
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        alignment: Alignment.center,
-                        child: Image.asset('assets/images/item-empty.png',
-                            width: 300, height: 300),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 0, vertical: 60),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Hallo ',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                            Text(
-                              'Untuk saat ini data masih kosong, tekan tombol dibawah untuk menambahkan data baru.',
-                              textAlign: TextAlign.center,
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Tindakan yang dilakukan ketika tombol ditekan
-                          },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(335, 50),
-                            backgroundColor:
-                                Colors.blue, // Warna latar belakang tombol
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  10.0), // Radius sudut tombol
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Selamat datang,',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.blue,
                             ),
                           ),
-                          child: const Text(
-                            'Tambah data',
-                            style: TextStyle(color: Colors.white),
+                          Text(
+                            _username ?? "Loading...",
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      )
+                        ],
+                      ),
+                      const CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage(
+                            'assets/images/avatar.png'), // Avatar image
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+
+              // CustomTimeline Widget
+              SizedBox(
+                height: 200, // Adjust the height as needed
+                child: const CustomTimeline(),
+              ),
+
+              const SizedBox(height: 10),
+
+              Expanded(
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: ListView(
+                      children: [
+                        Text(
+                          "Flow Apps",
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        AccordionItem(
+                          title: 'Register dan Login',
+                          children: [
+                            ListTile(
+                              title: const Text(
+                                  'Setelah anda berhasil register dan login anda akan dibawa ke halaman dashboard ini.'),
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                        AccordionItem(
+                          title: 'Tambah Perangkat',
+                          children: [
+                            ListTile(
+                              title: const Text(
+                                  ' Pada tahap ini silakan anda tambah perangkat anda dihalaman tambah perangkat'),
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                        AccordionItem(
+                          title: 'Tambah Antrian',
+                          children: [
+                            ListTile(
+                              title: const Text(
+                                  'Jika anda sudah mendaftarkan perangkat anda, langkah selanjutnya adalah melakukan registrasi antrean, dimana antrean ini kemudian akan diproses oleh tim helpdesk dan teknisi kami. Anda juga dapat melihat status perbaikan dan informasi lainnya di halaman Antrean, harap diingat aturan pemrosesannya adalah 3x24 jam dari awal tiket dibuat.'),
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                        AccordionItem(
+                          title: 'Tunggu Notifikasi',
+                          children: [
+                            ListTile(
+                              title: const Text(
+                                  'Jika proses perbaikan telah selesai, tim kami akan mengirimkan notifikasi kepada pelanggan melalui fitur Chat dan alamat email. Pastikan untuk selalu rutin mengecek notifikasi.'),
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                        AccordionItem(
+                          title: 'Tanya Jawab Helpdesk',
+                          children: [
+                            ListTile(
+                              title: const Text(
+                                  'Anda juga bisa tanya jawab dengan helpdesk kami.'),
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -139,16 +168,29 @@ class DashboardEmpty extends StatelessWidget {
   }
 }
 
-class DashboardNotEmpty extends StatelessWidget {
-  final String username;
-  const DashboardNotEmpty({required this.username, super.key});
+class AccordionItem extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const AccordionItem({
+    required this.title,
+    required this.children,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Welcome, $username!",
-        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 4,
+        child: ExpansionTile(
+          title: Text(title),
+          children: children,
+        ),
       ),
     );
   }
