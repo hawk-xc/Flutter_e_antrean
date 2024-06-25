@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_e_service_app/helpers/validation_helpers.dart';
 import 'register_view.dart';
 import '../controller/login_controller.dart';
 import '../model/user_model.dart';
@@ -25,7 +26,10 @@ class _LoginViewState extends State<LoginView> {
       String email = _emailController.text;
       String password = _passwordController.text;
 
-      UserModel user = UserModel(email: email, password: password);
+      UserModel user = UserModel(
+        email: email,
+        password: password,
+      );
 
       setState(() {
         _loading = true;
@@ -110,12 +114,7 @@ class _LoginViewState extends State<LoginView> {
                               horizontal: 20, vertical: 15),
                           child: TextFormField(
                             controller: _emailController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Email wajib diisi!';
-                              }
-                              return null;
-                            },
+                            validator: (value) => ValidatorHelpers.email(value),
                             decoration: InputDecoration(
                               labelText: 'Email',
                               border: OutlineInputBorder(
@@ -130,12 +129,8 @@ class _LoginViewState extends State<LoginView> {
                           child: TextFormField(
                             controller: _passwordController,
                             obscureText: _isObscure,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Harap masukkan password!';
-                              }
-                              return null;
-                            },
+                            validator: (value) =>
+                                ValidatorHelpers.password(value),
                             decoration: InputDecoration(
                               labelText: 'Katasandi',
                               border: OutlineInputBorder(

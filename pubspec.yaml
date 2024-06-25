@@ -28,11 +28,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  accordion: ^2.6.0
   cupertino_icons: ^1.0.6
   dio: ^5.4.3+1
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.3
+  timelines: ^0.1.0
 
 dev_dependencies:
   flutter_lints: ^3.0.0
