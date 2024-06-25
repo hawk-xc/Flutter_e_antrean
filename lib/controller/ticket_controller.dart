@@ -1,11 +1,45 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_e_service_app/helpers/api_client.dart';
 import 'package:flutter_e_service_app/helpers/user_info.dart';
+import 'package:flutter_e_service_app/model/device_model.dart';
 import 'package:flutter_e_service_app/model/ticket_model.dart';
 
 class TicketController {
   final ApiClient apiClient = ApiClient();
   final UserInfo userInfo = UserInfo();
+
+  Future<List<DeviceModel>> fetchDevices() async {
+    try {
+      String? accessToken = await userInfo.getToken();
+      if (accessToken == null) {
+        throw Exception('No access token found');
+      }
+
+      Response response = await apiClient
+          .get('devices', headers: {'Authorization': 'Bearer $accessToken'});
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data;
+        List<DeviceModel> devices =
+            data.map((json) => DeviceModel.fromJson(json)).toList();
+        return devices;
+      } else {
+        throw Exception('Failed to load devices: ${response.statusCode}');
+      }
+    } on DioError catch (e) {
+      if (e.response != null) {
+        print(
+            'Dio error response: ${e.response!.statusCode} - ${e.response!.statusMessage}');
+        throw Exception('Failed to load devices: ${e.response!.statusCode}');
+      } else {
+        print('Dio error: ${e.message}');
+        throw Exception('Failed to load devices: ${e.message}');
+      }
+    } catch (e) {
+      print('General error: $e');
+      throw Exception('Failed to load devices: $e');
+    }
+  }
 
   Future<List<Ticket>> fetchTickets() async {
     try {

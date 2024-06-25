@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_e_service_app/ui/device_view.dart';
 import 'package:flutter_e_service_app/ui/main_dashboard.dart';
 import 'package:flutter_e_service_app/ui/profile_view.dart';
 import 'package:flutter_e_service_app/ui/splash_screen_view.dart';
@@ -34,7 +35,7 @@ class MainPageState extends State<MainPage> {
     // DashboardView(),
     // DashboardData(),
     MainDashboard(),
-    Icon(Icons.laptop),
+    DeviceView(),
     TicketView(),
     ProfileView(),
   ];

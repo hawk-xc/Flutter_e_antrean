@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/controller/ticket_controller.dart';
 import 'package:flutter_e_service_app/helpers/user_info.dart';
+import 'package:flutter_e_service_app/model/device_model.dart';
 import 'package:flutter_e_service_app/model/ticket_model.dart';
 import 'package:flutter_e_service_app/ui/ticket_partial/ticketEmpty.dart';
 import 'package:flutter_e_service_app/ui/ticket_partial/ticketForm.dart';
@@ -16,6 +17,9 @@ class TicketView extends StatefulWidget {
 class _TicketViewState extends State<TicketView>
     with SingleTickerProviderStateMixin {
   String? _username;
+  final TicketController _ticketController = TicketController();
+  List<DeviceModel> _devices = [];
+  bool _isLoading = true;
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
@@ -44,6 +48,7 @@ class _TicketViewState extends State<TicketView>
     _getDeviceData();
     super.initState();
     _loadUsername();
+    _fetchDevices();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -55,6 +60,21 @@ class _TicketViewState extends State<TicketView>
       parent: _animationController,
       curve: Curves.easeInOut,
     ));
+  }
+
+  Future<void> _fetchDevices() async {
+    try {
+      List<DeviceModel> devices = await _ticketController.fetchDevices();
+      setState(() {
+        _devices = devices;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Failed to load devices: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _loadUsername() async {
@@ -266,6 +286,8 @@ class _TicketViewState extends State<TicketView>
                   position: _animation,
                   child: TicketForm(
                     formKey: _formKey,
+                    deviceNames:
+                        _devices.map((device) => device.deviceName).toList(),
                     nameController: _nameController,
                     descriptionController: _descriptionController,
                     driveLinkController: _driveLinkController,

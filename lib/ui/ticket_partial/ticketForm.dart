@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class TicketForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
+  final List<String> deviceNames;
   final TextEditingController nameController;
   final TextEditingController descriptionController;
   final TextEditingController driveLinkController;
@@ -13,6 +14,7 @@ class TicketForm extends StatefulWidget {
 
   TicketForm({
     required this.formKey,
+    required this.deviceNames,
     required this.nameController,
     required this.descriptionController,
     required this.driveLinkController,
@@ -29,8 +31,15 @@ class TicketForm extends StatefulWidget {
 }
 
 class _TicketFormState extends State<TicketForm> {
-  String? _selectedItem;
-  final List<String> _items = ['Item 1', 'Item 2', 'Item 3'];
+  String? _selectedItem; // Buat variabel _selectedItem
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedItem = widget.nameController
+        .text; // Inisialisasi _selectedItem dengan nilai controller saat initState
+    // print(_selectedItem);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,53 +110,30 @@ class _TicketFormState extends State<TicketForm> {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   margin: const EdgeInsets.symmetric(
-                  //       horizontal: 20, vertical: 15),
-                  //   child: TextFormField(
-                  //     controller: widget.nameController,
-                  //     validator: (value) {
-                  //       if (value == null || value.isEmpty) {
-                  //         return 'Nama perangkat wajib diisi!';
-                  //       }
-                  //       return null;
-                  //     },
-                  //     decoration: InputDecoration(
-                  //       labelText: 'Nama Perangkat',
-                  //       border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(8),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   Container(
                     margin: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 15),
                     child: DropdownButtonFormField<String>(
                       value: _selectedItem,
-                      decoration: InputDecoration(
-                        labelText: 'Pilih Item',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      items: _items.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
                       onChanged: (newValue) {
                         setState(() {
                           _selectedItem = newValue;
+                          widget.nameController.text =
+                              newValue ?? ''; // Perbarui nilai nameController
                         });
                       },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please select an item';
-                        }
-                        return null;
-                      },
+                      items: widget.deviceNames.map((String deviceName) {
+                        print('deviceNames: $deviceName');
+                        return DropdownMenuItem<String>(
+                          value: deviceName,
+                          child: Text(deviceName),
+                        );
+                      }).toList(),
+                      decoration: const InputDecoration(
+                        labelText: 'Nama Perangkat',
+                      ),
+                      validator: (value) =>
+                          value == null ? 'Please select a device' : null,
                     ),
                   ),
                   Container(

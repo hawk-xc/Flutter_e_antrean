@@ -37,7 +37,7 @@ class _MainDashboardState extends State<MainDashboard> {
         future: futureTickets,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
               child: Text('Failed to load tickets: ${snapshot.error}'),
@@ -115,9 +115,9 @@ class DashboardView extends StatelessWidget {
               const SizedBox(height: 10),
 
               // CustomTimeline Widget
-              SizedBox(
+              const SizedBox(
                 height: 200, // Adjust the height as needed
-                child: const CustomTimeline(),
+                child: CustomTimeline(),
               ),
 
               const SizedBox(height: 10),
@@ -132,7 +132,7 @@ class DashboardView extends StatelessWidget {
                     padding: const EdgeInsets.all(18.0),
                     child: ListView(
                       children: [
-                        Text(
+                        const Text(
                           "Flow Apps",
                           style: TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
@@ -280,8 +280,8 @@ class DashboardData extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Spacer(),
-                          CircleAvatar(
+                          const Spacer(),
+                          const CircleAvatar(
                             radius: 30,
                             backgroundImage: AssetImage(
                                 'assets/images/avatar.png'), // Placeholder image
@@ -297,13 +297,14 @@ class DashboardData extends StatelessWidget {
                     future: TicketController().fetchTickets(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return Center(
                             child: Text(
                                 'Failed to load tickets: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('No tickets available'));
+                        return const Center(
+                            child: Text('No tickets available'));
                       } else {
                         int totalDevices = snapshot.data!
                             .map((ticket) => ticket.device)
@@ -359,13 +360,14 @@ class DashboardData extends StatelessWidget {
                     future: TicketController().fetchTickets(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return Center(
                             child: Text(
                                 'Failed to load tickets: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('No tickets available'));
+                        return const Center(
+                            child: Text('No tickets available'));
                       } else {
                         return Column(
                           children: snapshot.data!.map((ticket) {
@@ -389,26 +391,26 @@ class DashboardData extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.devices),
-            label: 'Devices',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Queues',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.devices),
+      //       label: 'Devices',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.list),
+      //       label: 'Queues',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'Profile',
+      //     ),
+      //   ],
+      // ),
     );
   }
 
@@ -464,7 +466,7 @@ class DashboardData extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [Color(0xFF4A00E0), Color(0xFF8E2DE2)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -480,7 +482,7 @@ class DashboardData extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -497,7 +499,7 @@ class DashboardData extends StatelessWidget {
                     ),
                     child: Text(
                       _getStatusText(statusId),
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -505,25 +507,25 @@ class DashboardData extends StatelessWidget {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Icon(Icons.person, color: Colors.white),
+                  const Icon(Icons.person, color: Colors.white),
                   const SizedBox(width: 8),
                   Text(
                     '$userName', // Username
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(width: 16),
-                  Icon(Icons.devices, color: Colors.white),
+                  const Icon(Icons.devices, color: Colors.white),
                   const SizedBox(width: 8),
                   Text(
                     '$device',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(width: 16),
-                  Icon(Icons.timer, color: Colors.white),
+                  const Icon(Icons.timer, color: Colors.white),
                   const SizedBox(width: 8),
                   Text(
                     '$time',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ],
               ),
