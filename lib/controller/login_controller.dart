@@ -9,19 +9,21 @@ class LoginController {
   // Fungsi untuk memvalidasi kredensial login dengan API
   Future<bool> login(UserModel user) async {
     try {
-      // Mengirim permintaan POST ke API untuk login
       final response = await _apiClient.post('/login', user.toJson());
 
-      // Memeriksa status respons API
+      // print(response);
+
       if (response.statusCode == 200) {
+        // Memeriksa apakah login berhasil berdasarkan respons API
         final jsonData = response.data;
         final token =
             jsonData['token']; // Menyesuaikan dengan struktur API Anda
-        final username = jsonData['username'];
 
-        // Menyimpan token dan username menggunakan SharedPreferences
+        // Menyimpan token dan email menggunakan SharedPreferences
         await UserInfo().setToken(token);
-        await UserInfo().setUsername(username);
+
+        // Menyimpan token dan email menggunakan SharedPreferences
+        // await UserInfo().setEmail(email);
 
         return true;
       } else {
