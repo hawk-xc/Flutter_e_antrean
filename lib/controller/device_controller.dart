@@ -4,7 +4,7 @@ import 'package:flutter_e_service_app/model/device_model.dart';
 class DeviceController {
   final ApiClient _apiClient = ApiClient();
 
-  Future index() async {
+  Future<List<DeviceModel>> index() async {
     try {
       final response = await _apiClient.get('device');
 
@@ -17,7 +17,7 @@ class DeviceController {
         throw Exception('Failed to load devices');
       }
     } catch (e) {
-      return e;
+      throw Exception('Failed to load devices: $e');
     }
   }
 

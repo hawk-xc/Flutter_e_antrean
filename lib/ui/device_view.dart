@@ -31,10 +31,21 @@ class _DeviceViewState extends State<DeviceView>
   late Animation<Offset> _animation;
 
   Future<void> _getDeviceData() async {
-    var response = await DeviceController().index();
-    setState(() {
-      devices = response;
-    });
+    try {
+      var response = await DeviceController().index();
+      setState(() {
+        devices = response;
+      });
+    } catch (e) {
+      setState(() {
+        devices = [];
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load devices: $e'),
+        ),
+      );
+    }
   }
 
   @override
@@ -71,6 +82,7 @@ class _DeviceViewState extends State<DeviceView>
             showForm = false;
             isEditing = false;
             editingDevice = null;
+            _resetFormFields();
           });
         });
       } else {
@@ -82,6 +94,12 @@ class _DeviceViewState extends State<DeviceView>
         _animationController.forward();
       }
     });
+  }
+
+  void _resetFormFields() {
+    _nameController.clear();
+    _yearController.clear();
+    _driveLinkController.clear();
   }
 
   void _populateFormForEditing(DeviceModel device) {
@@ -131,9 +149,9 @@ class _DeviceViewState extends State<DeviceView>
       await _getDeviceData();
       _toggleFormVisibility();
       _formKey.currentState!.reset();
-      _nameController.clear();
-      _yearController.clear();
-      _driveLinkController.clear();
+      // _nameController.clear();
+      // _yearController.clear();
+      // _driveLinkController.clear();
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -189,9 +207,9 @@ class _DeviceViewState extends State<DeviceView>
 
         // Reset the form and clear the TextEditingControllers
         _formKey.currentState!.reset();
-        _nameController.clear();
-        _yearController.clear();
-        _driveLinkController.clear();
+        // _nameController.clear();
+        // _yearController.clear();
+        // _driveLinkController.clear();
 
         // Show a success snackbar
         // ignore: use_build_context_synchronously
