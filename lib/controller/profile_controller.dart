@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/helpers/user_info.dart';
 import 'package:flutter_e_service_app/helpers/api_client.dart';
+// import 'package:flutter_e_service_app/model/password_model.dart';
 import 'package:flutter_e_service_app/ui/login_view.dart';
 
 class ProfileController {
@@ -47,6 +49,27 @@ class ProfileController {
                   const LoginView()), // Sesuaikan dengan nama widget splash screen Anda
         );
       }
+    }
+  }
+
+  Future<bool> updatePassword(
+      String bPassword, String nPassword, String cPassword) async {
+    try {
+      final response = await _apiClient.put('passwordupdate', {
+        'b_password': bPassword,
+        'n_password': nPassword,
+        'c_password': cPassword,
+      });
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        // ignore: avoid_print
+        // print('Error: ${response.statusCode} - ${response.data}');
+        return false;
+      }
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
