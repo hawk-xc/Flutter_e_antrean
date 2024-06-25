@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import '../helpers/user_info.dart';
-import '../helpers/api_client.dart';
+import 'package:flutter_e_service_app/helpers/user_info.dart';
+import 'package:flutter_e_service_app/helpers/api_client.dart';
+import 'package:flutter_e_service_app/ui/login_view.dart';
+import 'package:flutter_e_service_app/controller/profile_controller.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({Key? key}) : super(key: key);
+  const ProfileView({super.key});
 
   @override
   _ProfileViewState createState() => _ProfileViewState();
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  final ApiClient apiClient = ApiClient();
+  final ProfileController profileController = ProfileController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   Map<String, dynamic> data = {};
-  final UserInfo userInfo = UserInfo();
 
   @override
   void initState() {
@@ -24,32 +25,15 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Future<void> getUserData() async {
-    String? token = await userInfo.getToken();
-
-    if (token == null) {
-      setState(() {
-        data = {'error': 'No token found'};
-      });
-      return;
-    }
-
-    try {
-      final response = await apiClient.get(
-        'user',
-        headers: {'Authorization': 'Bearer $token'},
-      );
-      setState(() {
-        data = response.data;
-        // Set nilai controller sesuai dengan data yang diperoleh
+    final userData = await profileController.getUserData();
+    setState(() {
+      data = userData;
+      if (!data.containsKey('error')) {
         usernameController.text = data['username'] ?? '';
         nameController.text = data['name'] ?? '';
         emailController.text = data['email'] ?? '';
-      });
-    } catch (e) {
-      setState(() {
-        data = {'error': e.toString()};
-      });
-    }
+      }
+    });
   }
 
   @override
@@ -68,7 +52,8 @@ class _ProfileViewState extends State<ProfileView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 100), // Spacer untuk mengatur posisi elemen
+              const SizedBox(
+                  height: 100), // Spacer untuk mengatur posisi elemen
               Container(
                 padding: const EdgeInsets.all(30.0),
                 child: Column(
@@ -79,7 +64,7 @@ class _ProfileViewState extends State<ProfileView> {
                       child: const Icon(Icons.person,
                           size: 50, color: Colors.white),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Card(
                       color: Colors.white,
                       elevation: 4,
@@ -95,12 +80,12 @@ class _ProfileViewState extends State<ProfileView> {
                               label: 'Username',
                               controller: usernameController,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             ProfileTextField(
                               label: 'Nama',
                               controller: nameController,
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             ProfileTextField(
                               label: 'Email',
                               controller: emailController,
@@ -109,7 +94,7 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Card(
                       color: Colors.white,
                       elevation: 4,
@@ -121,30 +106,30 @@ class _ProfileViewState extends State<ProfileView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            ProfileTextField(
+                            const ProfileTextField(
                               label: 'Password Sebelumnya',
                               initialValue: '',
                               obscureText: true,
                             ),
-                            SizedBox(height: 10),
-                            ProfileTextField(
+                            const SizedBox(height: 10),
+                            const ProfileTextField(
                               label: 'Password Baru',
                               initialValue: '',
                               obscureText: true,
                             ),
-                            SizedBox(height: 10),
-                            ProfileTextField(
+                            const SizedBox(height: 10),
+                            const ProfileTextField(
                               label: 'Ulangi Password Baru',
                               initialValue: '',
                               obscureText: true,
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () {
                                 // Tindakan yang dilakukan ketika tombol ditekan
                               },
                               style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(335, 50),
+                                minimumSize: const Size(500, 50),
                                 backgroundColor: Colors.blue,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -159,7 +144,7 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Card(
                       color: Colors.white,
                       elevation: 4,
@@ -171,21 +156,58 @@ class _ProfileViewState extends State<ProfileView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
+                            const Text(
+                              'Logout akun',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () async {
+                                await profileController.logout(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(500, 50),
+                                backgroundColor: const Color(0xFFD5B4B4),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                              child: const Text(
+                                'Logout Akun',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Card(
+                      color: Colors.white,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
                               'Hapus Akun',
                               style: TextStyle(fontSize: 20),
                             ),
-                            SizedBox(height: 10),
-                            Text(
+                            const SizedBox(height: 10),
+                            const Text(
                               'Setelah akun anda dihapus, Semua data pada system otomatis akan terhapus. Sebelum menghapus akun, mohon dipastikan ulang dengan teliti.',
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: () {
-                                // Tindakan yang dilakukan ketika tombol ditekan
+                              onPressed: () async {
+                                await profileController.logout(context);
                               },
                               style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(335, 50),
+                                minimumSize: const Size(500, 50),
                                 backgroundColor: Colors.red,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -227,12 +249,12 @@ class ProfileTextField extends StatelessWidget {
   final bool obscureText;
 
   const ProfileTextField({
-    Key? key,
+    super.key,
     required this.label,
     this.controller,
     this.initialValue,
     this.obscureText = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +268,7 @@ class ProfileTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         filled: true,
-        fillColor: Colors.white.withOpacity(0.9),
+        fillColor: Colors.white.withOpacity(0.8),
       ),
     );
   }
