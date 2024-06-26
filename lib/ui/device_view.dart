@@ -40,6 +40,7 @@ class _DeviceViewState extends State<DeviceView>
       setState(() {
         devices = [];
       });
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to load devices: $e'),
@@ -207,11 +208,6 @@ class _DeviceViewState extends State<DeviceView>
 
         // Reset the form and clear the TextEditingControllers
         _formKey.currentState!.reset();
-        // _nameController.clear();
-        // _yearController.clear();
-        // _driveLinkController.clear();
-
-        // Show a success snackbar
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
