@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_e_service_app/helpers/user_info.dart';
-import 'package:flutter_e_service_app/helpers/api_client.dart';
-import 'package:flutter_e_service_app/ui/login_view.dart';
 import 'package:flutter_e_service_app/controller/profile_controller.dart';
 
 class ProfileView extends StatefulWidget {
@@ -13,9 +10,13 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   final ProfileController profileController = ProfileController();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController oldPasswordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   Map<String, dynamic> data = {};
 
   @override
@@ -26,12 +27,16 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> getUserData() async {
     final userData = await profileController.getUserData();
+    print(userData); // Print data untuk memastikan data diterima dengan benar
     setState(() {
       data = userData;
-      if (!data.containsKey('error')) {
-        usernameController.text = data['username'] ?? '';
-        nameController.text = data['name'] ?? '';
-        emailController.text = data['email'] ?? '';
+      if (data.containsKey('data')) {
+        final userInfo = data['data'];
+        usernameController.text = userInfo['username'] ?? '';
+        nameController.text = userInfo['name'] ?? '';
+        emailController.text = userInfo['email'] ?? '';
+      } else {
+        print('Error: ${data['error']}');
       }
     });
   }
@@ -106,27 +111,32 @@ class _ProfileViewState extends State<ProfileView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const ProfileTextField(
+                            ProfileTextField(
                               label: 'Password Sebelumnya',
-                              initialValue: '',
+                              controller: oldPasswordController,
                               obscureText: true,
                             ),
                             const SizedBox(height: 10),
-                            const ProfileTextField(
+                            ProfileTextField(
                               label: 'Password Baru',
-                              initialValue: '',
+                              controller: newPasswordController,
                               obscureText: true,
                             ),
                             const SizedBox(height: 10),
-                            const ProfileTextField(
+                            ProfileTextField(
                               label: 'Ulangi Password Baru',
-                              initialValue: '',
+                              controller: confirmPasswordController,
                               obscureText: true,
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
-                              onPressed: () {
-                                // Tindakan yang dilakukan ketika tombol ditekan
+                              onPressed: () async {
+                                await profileController.confirmPasswordUpdate(
+                                  context,
+                                  oldPasswordController.text,
+                                  newPasswordController.text,
+                                  confirmPasswordController.text,
+                                );
                               },
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(500, 50),
@@ -234,10 +244,12 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   void dispose() {
-    // Cleanup controllers when not needed
     usernameController.dispose();
     nameController.dispose();
     emailController.dispose();
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 }

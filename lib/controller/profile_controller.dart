@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/helpers/user_info.dart';
 import 'package:flutter_e_service_app/helpers/api_client.dart';
-// import 'package:flutter_e_service_app/model/password_model.dart';
 import 'package:flutter_e_service_app/ui/login_view.dart';
 
 class ProfileController {
@@ -19,15 +18,13 @@ class ProfileController {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // Tutup dialog dan kembalikan false
+                Navigator.of(context).pop(false);
               },
               child: const Text('Tidak'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // Tutup dialog dan kembalikan true
+                Navigator.of(context).pop(true);
               },
               child: const Text('Ya'),
             ),
@@ -40,13 +37,9 @@ class ProfileController {
       await userInfo.logout();
       String? token = await userInfo.getToken();
       if (token == null || token.isEmpty) {
-        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  const LoginView()), // Sesuaikan dengan nama widget splash screen Anda
+          MaterialPageRoute(builder: (context) => const LoginView()),
         );
       }
     }
@@ -62,14 +55,56 @@ class ProfileController {
       });
 
       if (response.statusCode == 200) {
+        print('Password update successful'); // Tambahkan logging untuk berhasil
         return true;
       } else {
-        // ignore: avoid_print
-        // print('Error: ${response.statusCode} - ${response.data}');
+        print('Error: ${response.statusCode} - ${response.data}');
         return false;
       }
     } catch (e) {
-      throw Exception(e);
+      print('Exception: $e');
+      return false;
+    }
+  }
+
+  Future<void> confirmPasswordUpdate(BuildContext context, String bPassword,
+      String nPassword, String cPassword) async {
+    bool? shouldUpdate = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Konfirmasi Pembaruan Kata Sandi'),
+          content:
+              const Text('Apakah Anda yakin ingin memperbarui kata sandi?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text('Tidak'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Ya'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldUpdate == true) {
+      bool success = await updatePassword(bPassword, nPassword, cPassword);
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kata sandi berhasil diperbarui')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal memperbarui kata sandi')),
+        );
+      }
     }
   }
 
@@ -82,7 +117,7 @@ class ProfileController {
 
     try {
       final response = await _apiClient.get(
-        'user',
+        'profile',
         headers: {'Authorization': 'Bearer $token'},
       );
       return response.data;
