@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/helpers/user_info.dart';
 import 'package:flutter_e_service_app/helpers/api_client.dart';
@@ -38,6 +37,7 @@ class ProfileController {
       String? token = await userInfo.getToken();
       if (token == null || token.isEmpty) {
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => const LoginView()),
         );
@@ -55,14 +55,14 @@ class ProfileController {
       });
 
       if (response.statusCode == 200) {
-        print('Password update successful'); // Tambahkan logging untuk berhasil
+        // print('Password update successful'); // Tambahkan logging untuk berhasil
         return true;
       } else {
-        print('Error: ${response.statusCode} - ${response.data}');
+        // print('Error: ${response.statusCode} - ${response.data}');
         return false;
       }
     } catch (e) {
-      print('Exception: $e');
+      // print('Exception: $e');
       return false;
     }
   }
@@ -97,10 +97,12 @@ class ProfileController {
     if (shouldUpdate == true) {
       bool success = await updatePassword(bPassword, nPassword, cPassword);
       if (success) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Kata sandi berhasil diperbarui')),
         );
       } else {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gagal memperbarui kata sandi')),
         );
@@ -123,6 +125,47 @@ class ProfileController {
       return response.data;
     } catch (e) {
       return {'error': e.toString()};
+    }
+  }
+
+  Future<void> deleteAccount(BuildContext context) async {
+    String? token = await userInfo.getToken();
+
+    if (token == null) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Gagal menghapus akun. Token tidak ditemukan.')),
+      );
+      return;
+    }
+
+    try {
+      final response = await _apiClient.delete('profile/1');
+      if (response.statusCode == 200) {
+        await userInfo.logout();
+        Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(builder: (context) => const LoginView()),
+        );
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Akun berhasil dihapus')),
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal menghapus akun')),
+        );
+      }
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        // SnackBar(content: Text('Gagal menghapus akun. Error: $e')),
+        const SnackBar(
+            content: Text('Gagal menghapus akun. Akun dalam keadaan aktif')),
+      );
     }
   }
 }

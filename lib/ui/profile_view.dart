@@ -41,6 +41,37 @@ class _ProfileViewState extends State<ProfileView> {
     });
   }
 
+  Future<void> confirmDeleteAccount() async {
+    bool? shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Konfirmasi Hapus Akun'),
+          content: const Text(
+              'Apakah Anda yakin ingin menghapus akun Anda? Semua data Anda akan dihapus secara permanen.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text('Tidak'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Ya'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete == true) {
+      await profileController.deleteAccount(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -214,7 +245,7 @@ class _ProfileViewState extends State<ProfileView> {
                             const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () async {
-                                await profileController.logout(context);
+                                await confirmDeleteAccount();
                               },
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(500, 50),
