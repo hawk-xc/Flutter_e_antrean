@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_e_service_app/controller/profile_controller.dart';
+import 'package:flutter_e_service_app/helpers/user_info.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -18,6 +19,7 @@ class _ProfileViewState extends State<ProfileView> {
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  String? userImageUrl;
   Map<String, dynamic> data = {};
 
   @override
@@ -27,6 +29,7 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   Future<void> getUserData() async {
+    String baseUrl = 'http://localhost:8000/';
     final userData = await profileController.getUserData();
     // print(userData); // Print data untuk memastikan data diterima dengan benar
     setState(() {
@@ -36,6 +39,9 @@ class _ProfileViewState extends State<ProfileView> {
         usernameController.text = userInfo['username'] ?? '';
         nameController.text = userInfo['name'] ?? '';
         emailController.text = userInfo['email'] ?? '';
+        // userImageUrl = userInfo['user_image'] ?? '';
+        String userImageName = userInfo['user_image'];
+        userImageUrl = '$baseUrl/$userImageName';
       } else {
         // print('Error: ${data['error']}');
       }
@@ -90,8 +96,7 @@ class _ProfileViewState extends State<ProfileView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                  height: 100), // Spacer untuk mengatur posisi elemen
+              const SizedBox(height: 50), // Spacer untuk mengatur posisi elemen
               Container(
                 padding: const EdgeInsets.all(30.0),
                 child: Column(
@@ -100,7 +105,7 @@ class _ProfileViewState extends State<ProfileView> {
                       radius: 60,
                       backgroundColor: Colors.blue.shade400,
                       child: const Icon(Icons.person,
-                          size: 50, color: Colors.white),
+                          size: 80, color: Colors.white),
                     ),
                     const SizedBox(height: 20),
                     Card(
