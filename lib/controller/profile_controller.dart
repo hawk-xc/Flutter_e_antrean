@@ -45,37 +45,49 @@ class ProfileController {
     }
   }
 
-  Future<bool> updatePassword(
-      String bPassword, String nPassword, String cPassword) async {
+  Future<bool> update(
+    String username,
+    String name,
+    String email,
+    String bPassword,
+    String nPassword,
+    String cPassword,
+  ) async {
     try {
-      final response = await _apiClient.put('passwordupdate', {
+      final response = await _apiClient.put('profile/1', {
+        'username': username,
+        'name': name,
+        'email': email,
         'b_password': bPassword,
         'n_password': nPassword,
         'c_password': cPassword,
       });
 
       if (response.statusCode == 200) {
-        // print('Password update successful'); // Tambahkan logging untuk berhasil
         return true;
       } else {
-        // print('Error: ${response.statusCode} - ${response.data}');
         return false;
       }
     } catch (e) {
-      // print('Exception: $e');
       return false;
     }
   }
 
-  Future<void> confirmPasswordUpdate(BuildContext context, String bPassword,
-      String nPassword, String cPassword) async {
+  Future<void> confirmUpdate(
+      BuildContext context,
+      String username,
+      String name,
+      String email,
+      String bPassword,
+      String nPassword,
+      String cPassword) async {
     bool? shouldUpdate = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Konfirmasi Pembaruan Kata Sandi'),
+          title: const Text('Konfirmasi Pembaruan data?'),
           content:
-              const Text('Apakah Anda yakin ingin memperbarui kata sandi?'),
+              const Text('Apakah Anda yakin ingin memperbarui data akun anda?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -95,16 +107,17 @@ class ProfileController {
     );
 
     if (shouldUpdate == true) {
-      bool success = await updatePassword(bPassword, nPassword, cPassword);
+      bool success =
+          await update(username, name, email, bPassword, nPassword, cPassword);
       if (success) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Kata sandi berhasil diperbarui')),
+          const SnackBar(content: Text('Data berhasil diperbarui')),
         );
       } else {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal memperbarui kata sandi')),
+          const SnackBar(content: Text('Data gagal diperbahrui!')),
         );
       }
     }

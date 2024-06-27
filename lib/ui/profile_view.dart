@@ -185,8 +185,11 @@ class _ProfileViewState extends State<ProfileView> {
                             const SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () async {
-                                await profileController.confirmPasswordUpdate(
+                                await profileController.confirmUpdate(
                                   context,
+                                  usernameController.text,
+                                  nameController.text,
+                                  emailController.text,
                                   oldPasswordController.text,
                                   newPasswordController.text,
                                   confirmPasswordController.text,

@@ -34,7 +34,7 @@ class ApiClient {
         options: Options(headers: headers),
       );
       return response;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       throw Exception(e.message);
     }
   }
