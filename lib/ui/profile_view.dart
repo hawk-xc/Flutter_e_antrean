@@ -5,6 +5,7 @@ class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ProfileViewState createState() => _ProfileViewState();
 }
 
@@ -27,7 +28,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   Future<void> getUserData() async {
     final userData = await profileController.getUserData();
-    print(userData); // Print data untuk memastikan data diterima dengan benar
+    // print(userData); // Print data untuk memastikan data diterima dengan benar
     setState(() {
       data = userData;
       if (data.containsKey('data')) {
@@ -36,7 +37,7 @@ class _ProfileViewState extends State<ProfileView> {
         nameController.text = userInfo['name'] ?? '';
         emailController.text = userInfo['email'] ?? '';
       } else {
-        print('Error: ${data['error']}');
+        // print('Error: ${data['error']}');
       }
     });
   }
@@ -68,6 +69,7 @@ class _ProfileViewState extends State<ProfileView> {
     );
 
     if (shouldDelete == true) {
+      // ignore: use_build_context_synchronously
       await profileController.deleteAccount(context);
     }
   }
@@ -112,6 +114,24 @@ class _ProfileViewState extends State<ProfileView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            const Row(
+                              children: [
+                                Icon(
+                                  Icons.account_circle_outlined,
+                                  size: 25,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Informasi Pengguna',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10),
                             ProfileTextField(
                               label: 'Username',
                               controller: usernameController,
@@ -126,22 +146,25 @@ class _ProfileViewState extends State<ProfileView> {
                               label: 'Email',
                               controller: emailController,
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Card(
-                      color: Colors.white,
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
+                            const SizedBox(height: 30),
+                            const Row(
+                              children: [
+                                Icon(
+                                  Icons.password,
+                                  size: 25,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Ubah kata sandi',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10),
                             ProfileTextField(
                               label: 'Password Sebelumnya',
                               controller: oldPasswordController,
@@ -197,9 +220,23 @@ class _ProfileViewState extends State<ProfileView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            const Row(
+                              children: <Widget>[
+                                Icon(Icons.logout, size: 25),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Logout akun',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
                             const Text(
-                              'Logout akun',
-                              style: TextStyle(fontSize: 20),
+                              'Setelah logout, Anda akan kembali ke halaman login.',
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
@@ -234,10 +271,20 @@ class _ProfileViewState extends State<ProfileView> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Text(
-                              'Hapus Akun',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                            const Row(children: [
+                              Icon(
+                                Icons.delete_forever_outlined,
+                                size: 25,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                'Hapus Akun',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ]),
                             const SizedBox(height: 10),
                             const Text(
                               'Setelah akun anda dihapus, Semua data pada system otomatis akan terhapus. Sebelum menghapus akun, mohon dipastikan ulang dengan teliti.',
