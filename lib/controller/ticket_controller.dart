@@ -16,13 +16,13 @@ class TicketController {
       }
 
       Response response = await apiClient
-          .get('devices', headers: {'Authorization': 'Bearer $accessToken'});
+          .get('device', headers: {'Authorization': 'Bearer $accessToken'});
 
       if (response.statusCode == 200) {
-        List<dynamic> data = response.data;
-        List<DeviceModel> devices =
-            data.map((json) => DeviceModel.fromJson(json)).toList();
-        return devices;
+        List<dynamic> data = response.data['data'];
+        return data
+            .map((deviceJson) => DeviceModel.fromJson(deviceJson))
+            .toList();
       } else {
         throw Exception('Failed to load devices: ${response.statusCode}');
       }
@@ -96,14 +96,15 @@ class TicketController {
     }
   }
 
-  Future<bool> store(String userId, String deviceName, String deviceYear,
-      String driveLink) async {
+  Future<bool> store(
+      String deviceName, String description, String driveLink) async {
     try {
-      final response = await apiClient.post('device', {
-        'user_id': userId,
+      final response = await apiClient.post('antrean', {
+        // 'user_id': userId,
         'device_name': deviceName,
-        'device_year': deviceYear,
-        'drive_link': driveLink,
+        // 'device_year': deviceYear,
+        'description': description,
+        'image_link': driveLink,
       });
 
       if (response.statusCode == 200) {
@@ -122,14 +123,14 @@ class TicketController {
     }
   }
 
-  Future<bool> update(String id, String userId, String deviceName,
-      String deviceYear, String driveLink) async {
+  Future<bool> update(
+      int id, String deviceName, String description, String driveLink) async {
     try {
-      final response = await apiClient.put('device/$id', {
-        'user_id': userId,
+      final response = await apiClient.put('antrean/$id', {
+        // 'user_id': userId,
         'device_name': deviceName,
-        'device_year': deviceYear,
-        'drive_link': driveLink,
+        'description': description,
+        'image_link': driveLink,
       });
 
       if (response.statusCode == 200) {
@@ -148,7 +149,7 @@ class TicketController {
 
   Future<void> destroy(int id) async {
     try {
-      final response = await apiClient.delete('device/$id');
+      final response = await apiClient.delete('antrean/$id');
       if (response.statusCode != 200) {
         throw Exception('Failed to delete device');
       }

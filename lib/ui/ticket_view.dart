@@ -36,7 +36,7 @@ class _TicketViewState extends State<TicketView>
   late AnimationController _animationController;
   late Animation<Offset> _animation;
 
-  Future<void> _getDeviceData() async {
+  Future<void> _getTicketData() async {
     var response = await TicketController().fetchTickets();
     setState(() {
       tickets = response;
@@ -45,7 +45,7 @@ class _TicketViewState extends State<TicketView>
 
   @override
   void initState() {
-    _getDeviceData();
+    _getTicketData();
     super.initState();
     _loadUsername();
     _fetchDevices();
@@ -69,6 +69,8 @@ class _TicketViewState extends State<TicketView>
         _devices = devices;
         _isLoading = false;
       });
+      // print(
+      //     'Devices fetched: ${devices.map((device) => device.deviceName).toList()}');
     } catch (e) {
       print('Failed to load devices: $e');
       setState(() {
@@ -102,11 +104,14 @@ class _TicketViewState extends State<TicketView>
             showForm = false;
             isEditing = false;
             editingTicket = null;
+            _resetControllers(); // Reset controllers when hiding form
           });
         });
       } else {
         if (editing && device != null) {
           _populateFormForEditing(device);
+        } else {
+          _resetControllers(); // Reset controllers when showing form for adding
         }
         showForm = true;
         isEditing = editing;
@@ -115,14 +120,50 @@ class _TicketViewState extends State<TicketView>
     });
   }
 
+  void _resetControllers() {
+    _nameController.clear();
+    _descriptionController.clear();
+    _driveLinkController.clear();
+  }
+
+  // void _populateFormForEditing(Ticket ticket) {
+  //   // _nameController.text = ticket.id.toString();
+  //   final device = _devices.firstWhere((device) => device.id == ticket.id,
+  //       orElse: () => null);
+  //   if (device != null) {
+  //     _nameController.text = device.deviceName;
+  //   } else {
+  //     _nameController.text = ticket.id.toString();
+  //   }
+  //   _descriptionController.text = ticket.description ?? '';
+  //   _driveLinkController.text = ticket.imageLink ?? '';
+  //   editingTicket = ticket;
+  // }
   void _populateFormForEditing(Ticket ticket) {
-    _nameController.text = ticket.id.toString();
+    final device = _devices.firstWhere((device) => device.id == ticket.deviceId,
+        orElse: () => DeviceModel(
+              id: 0,
+              userId: 0,
+              userName: '',
+              deviceName: '',
+              deviceYear: '',
+              createdAt: '',
+              updatedAt: '',
+              driveLink: '',
+              imageLink: '',
+              createdAtDiff: '',
+            ));
+    if (device.id != 0) {
+      _nameController.text = device.deviceName;
+    } else {
+      _nameController.text = '';
+    }
     _descriptionController.text = ticket.description ?? '';
-    // _driveLinkController.text = ticket ?? '';
+    _driveLinkController.text = ticket.imageLink ?? '';
     editingTicket = ticket;
   }
 
-  Future<void> _addOrEditDevice() async {
+  Future<void> _addOrEditTicket() async {
     if (!_formKey.currentState!.validate()) {
       return; // If the form is not valid, stop execution
     }
@@ -131,7 +172,7 @@ class _TicketViewState extends State<TicketView>
       isLoading = true;
     });
 
-    String userId = '1';
+    // String userId = '1';
     String deviceName = _nameController.text;
     String deviceYear = _descriptionController.text;
     String driveLink = _driveLinkController.text;
@@ -139,15 +180,14 @@ class _TicketViewState extends State<TicketView>
 
     if (isEditing && editingTicket != null) {
       success = await TicketController().update(
-        editingTicket!.id.toString(),
-        userId,
-        deviceName,
-        deviceYear,
-        driveLink,
-      );
+          editingTicket!.id,
+          // userId,
+          deviceName,
+          deviceYear,
+          driveLink);
     } else {
       success = await TicketController().store(
-        userId,
+        // userId,
         deviceName,
         deviceYear,
         driveLink,
@@ -159,7 +199,7 @@ class _TicketViewState extends State<TicketView>
     });
 
     if (success) {
-      await _getDeviceData();
+      await _getTicketData();
       _toggleFormVisibility();
       _formKey.currentState!.reset();
       _nameController.clear();
@@ -178,8 +218,8 @@ class _TicketViewState extends State<TicketView>
                 ),
               ),
               Text(isEditing
-                  ? 'Berhasil memperbarui data perangkat!'
-                  : 'Berhasil menambahkan data perangkat!'),
+                  ? 'Berhasil memperbarui data antrean!'
+                  : 'Berhasil menambahkan data antrean!'),
             ],
           ),
         ),
@@ -198,8 +238,8 @@ class _TicketViewState extends State<TicketView>
                 ),
               ),
               Text(isEditing
-                  ? 'Galat memperbarui data perangkat!'
-                  : 'Galat menambahkan data perangkat!'),
+                  ? 'Galat memperbarui data antrean!'
+                  : 'Galat menambahkan data antrean!'),
             ],
           ),
         ),
@@ -215,7 +255,7 @@ class _TicketViewState extends State<TicketView>
 
       try {
         await TicketController().destroy(editingTicket!.id);
-        await _getDeviceData();
+        await _getTicketData();
         _toggleFormVisibility();
 
         // Reset the form and clear the TextEditingControllers
@@ -293,7 +333,7 @@ class _TicketViewState extends State<TicketView>
                     driveLinkController: _driveLinkController,
                     isLoading: isLoading,
                     toggleFormVisibility: _toggleFormVisibility,
-                    addDevice: _addOrEditDevice,
+                    addTicket: _addOrEditTicket,
                     isEditing: isEditing,
                     deleteDevice: _deleteDevice,
                   ),
@@ -304,8 +344,8 @@ class _TicketViewState extends State<TicketView>
                 TicketNotEmpty(
                   tickets: tickets,
                   username: _username,
-                  onAddDevice: () => _toggleFormVisibility(),
-                  onEditDevice: (device) =>
+                  onAddTicket: () => _toggleFormVisibility(),
+                  onEditTicket: (device) =>
                       _toggleFormVisibility(editing: true, device: device),
                 ),
             ],

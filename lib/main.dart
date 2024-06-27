@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_e_service_app/helpers/user_info.dart';
 import 'package:flutter_e_service_app/ui/device_view.dart';
 import 'package:flutter_e_service_app/ui/main_dashboard.dart';
 import 'package:flutter_e_service_app/ui/profile_view.dart';
@@ -6,23 +7,34 @@ import 'package:flutter_e_service_app/ui/device_view.dart';
 import 'package:flutter_e_service_app/ui/splash_screen_view.dart';
 import 'package:flutter_e_service_app/ui/ticket_view.dart';
 
-void main() => runApp(
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'Poppins',
-        ),
-        // home: const MainPage(),
-        // home: const DashboardData(),
-        // home: MainDashboard(),
-        // home: const DashboardView(),
-        // home: const TicketNotEmpty(),
-        // home: const TicketView(),
-        home: const SplashScreen(),
-        // home: const LoginView(),
-      ),
-    );
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var token = await UserInfo().getToken();
+  print(token);
+  runApp(MaterialApp(
+    title: "Klinik APP",
+    debugShowCheckedModeBanner: false,
+    home: token == null ? SplashScreen() : MainPage(),
+  ));
+}
+
+// void main() => runApp(
+//       MaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         theme: ThemeData(
+//           primarySwatch: Colors.blue,
+//           fontFamily: 'Poppins',
+//         ),
+//         // home: const MainPage(),
+//         // home: const DashboardData(),
+//         // home: MainDashboard(),
+//         // home: const DashboardView(),
+//         // home: const TicketNotEmpty(),
+//         // home: const TicketView(),
+//         home: const SplashScreen(),
+//         // home: const LoginView(),
+//       ),
+//     );
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
