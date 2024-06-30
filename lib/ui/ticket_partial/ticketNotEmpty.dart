@@ -4,15 +4,15 @@ import 'package:flutter_e_service_app/model/ticket_model.dart';
 class TicketNotEmpty extends StatelessWidget {
   final String? username;
   final List<Ticket> tickets;
-  final VoidCallback onAddDevice;
-  final Function(Ticket) onEditDevice;
+  final VoidCallback onAddTicket;
+  final Function(Ticket) onEditTicket;
 
   const TicketNotEmpty({
     super.key,
     required this.username,
     required this.tickets,
-    required this.onAddDevice,
-    required this.onEditDevice,
+    required this.onAddTicket,
+    required this.onEditTicket,
   });
 
   @override
@@ -47,7 +47,7 @@ class TicketNotEmpty extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: onAddDevice,
+                  onPressed: onAddTicket,
                   child: const Row(children: [Icon(Icons.add), Text("Tambah")]),
                 ),
               ],
@@ -68,7 +68,7 @@ class TicketNotEmpty extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final ticket = tickets[index];
                       return GestureDetector(
-                        onTap: () => onEditDevice(ticket),
+                        onTap: () => onEditTicket(ticket),
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           margin: const EdgeInsets.symmetric(

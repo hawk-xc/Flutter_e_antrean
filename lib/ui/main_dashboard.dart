@@ -329,7 +329,7 @@ class DashboardData extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: _buildStatCard('Total Antrean',
+                              child: _buildStatCard('Total \n Antrean',
                                   totalQueues.toString(), Colors.orange),
                             ),
                             const SizedBox(width: 8),
