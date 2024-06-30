@@ -174,7 +174,7 @@ class _TicketViewState extends State<TicketView>
 
     // String userId = '1';
     String deviceName = _nameController.text;
-    String deviceYear = _descriptionController.text;
+    String description = _descriptionController.text;
     String driveLink = _driveLinkController.text;
     bool success;
 
@@ -183,13 +183,13 @@ class _TicketViewState extends State<TicketView>
           editingTicket!.id,
           // userId,
           deviceName,
-          deviceYear,
+          description,
           driveLink);
     } else {
       success = await TicketController().store(
         // userId,
         deviceName,
-        deviceYear,
+        description,
         driveLink,
       );
     }

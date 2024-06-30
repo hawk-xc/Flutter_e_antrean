@@ -132,6 +132,7 @@ class TicketController {
         'description': description,
         'image_link': driveLink,
       });
+      print(deviceName);
 
       if (response.statusCode == 200) {
         return true;
