@@ -243,8 +243,11 @@ class _ProfileViewState extends State<ProfileView> {
                               ],
                             ),
                             const SizedBox(height: 10),
-                            const Text(
-                              'Setelah logout, Anda akan kembali ke halaman login.',
+                            const Row(
+                              children: [
+                                Text(
+                                    'Setelah logout, Anda akan kembali ke halaman login.'),
+                              ],
                             ),
                             const SizedBox(height: 20),
                             ElevatedButton(
