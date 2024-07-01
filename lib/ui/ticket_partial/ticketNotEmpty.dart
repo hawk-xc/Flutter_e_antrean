@@ -96,7 +96,7 @@ class TicketNotEmpty extends StatelessWidget {
                                   ),
                                   Text(
                                     // ticket.process.userId.toString(),
-                                    username ?? "guest",
+                                    ticket.userName ?? "guest",
                                     style: const TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold),

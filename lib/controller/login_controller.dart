@@ -18,9 +18,11 @@ class LoginController {
         final jsonData = response.data;
         final token =
             jsonData['token']; // Menyesuaikan dengan struktur API Anda
+        final username = jsonData['name'];
 
         // Menyimpan token dan email menggunakan SharedPreferences
         await UserInfo().setToken(token);
+        await UserInfo().setUsername(username);
 
         // Menyimpan token dan email menggunakan SharedPreferences
         // await UserInfo().setEmail(email);

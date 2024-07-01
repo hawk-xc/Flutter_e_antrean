@@ -27,6 +27,7 @@ class _MainDashboardState extends State<MainDashboard> {
     String? username = await userInfo.getUsername();
     setState(() {
       _username = username;
+      print(_username);
     });
   }
 
@@ -374,7 +375,7 @@ class DashboardData extends StatelessWidget {
                             return _buildQueueCard(
                               context,
                               'Antrean #${ticket.idTicket}',
-                              username ?? 'Guest',
+                              ticket.userName ?? 'Guest',
                               ticket.device.deviceName,
                               ticket.createdAtDiff,
                               _getColor(ticket.process.statusId),

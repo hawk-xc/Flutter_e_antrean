@@ -1,5 +1,6 @@
 class Ticket {
   final int id;
+  final String? userName;
   final String idTicket;
   final int deviceId;
   final String description;
@@ -14,6 +15,7 @@ class Ticket {
 
   Ticket({
     required this.id,
+    required this.userName,
     required this.idTicket,
     required this.deviceId,
     required this.description,
@@ -30,6 +32,7 @@ class Ticket {
   factory Ticket.fromJson(Map<String, dynamic> json) {
     return Ticket(
       id: json['id'] ?? 0,
+      userName: json['user_name'] ?? "Guest",
       idTicket: json['id_ticket'] ?? '',
       deviceId: json['device_id'] ?? 0,
       description: json['description'] ?? '',

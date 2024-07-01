@@ -5,7 +5,7 @@ import 'package:flutter_e_service_app/helpers/user_info.dart';
 final Dio dio = Dio(BaseOptions(
   baseUrl: 'http://localhost:8000/api/', // URL dasar untuk API
   // baseUrl:
-  //     'https://effb-103-164-115-58.ngrok-free.app/api/', // URL dasar untuk API
+  //     'https://f7e9-36-68-9-160.ngrok-free.app/api/', // URL dasar untuk API
   connectTimeout: const Duration(
       seconds:
           5000), // Waktu maksimum untuk mencoba menghubungkan (dalam milidetik)
