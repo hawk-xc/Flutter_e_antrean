@@ -237,160 +237,170 @@ class DashboardData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/mydoodle.jpg'), // Background image
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Welcome Section
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    'assets/images/mydoodle.jpg'), // Background image
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Welcome Section
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
                             children: [
-                              const Text(
-                                'Selamat datang,',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.blue,
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Selamat datang,',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                  Text(
+                                    username ?? 'Guest', // Username
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                username ?? 'Guest', // Username
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              const Spacer(),
+                              const CircleAvatar(
+                                radius: 30,
+                                backgroundImage: AssetImage(
+                                    'assets/images/avatar.png'), // Placeholder image
                               ),
                             ],
                           ),
-                          const Spacer(),
-                          const CircleAvatar(
-                            radius: 30,
-                            backgroundImage: AssetImage(
-                                'assets/images/avatar.png'), // Placeholder image
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
-                  // Statistic Section
-                  FutureBuilder<List<Ticket>>(
-                    future: TicketController().fetchTickets(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(
-                            child: Text(
-                                'Failed to load tickets: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
-                            child: Text('No tickets available'));
-                      } else {
-                        int totalDevices = snapshot.data!
-                            .map((ticket) => ticket.device)
-                            .toSet()
-                            .length;
-                        int totalProcesses = snapshot.data!
-                            .map((ticket) => ticket.process.id)
-                            .toSet()
-                            .length;
+                      // Statistic Section
+                      FutureBuilder<List<Ticket>>(
+                        future: TicketController().fetchTickets(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text(
+                                    'Failed to load tickets: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No tickets available'));
+                          } else {
+                            int totalDevices = snapshot.data!
+                                .map((ticket) => ticket.device)
+                                .toSet()
+                                .length;
+                            int totalProcesses = snapshot.data!
+                                .map((ticket) => ticket.process.id)
+                                .toSet()
+                                .length;
 
-                        // Calculate total queues
-                        int totalQueues = snapshot.data!
-                            .map((ticket) => ticket)
-                            .toSet()
-                            .length;
+                            // Calculate total queues
+                            int totalQueues = snapshot.data!
+                                .map((ticket) => ticket)
+                                .toSet()
+                                .length;
 
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: _buildStatCard('Total Perangkat',
-                                  totalDevices.toString(), Colors.blue),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: _buildStatCard('Total \n Antrean',
-                                  totalQueues.toString(), Colors.orange),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: _buildStatCard('Total \n Proses',
-                                  totalProcesses.toString(), Colors.green),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Queue Section
-                  const Text(
-                    'Antrean',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // FutureBuilder to display tickets
-                  FutureBuilder<List<Ticket>>(
-                    future: TicketController().fetchTickets(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(
-                            child: Text(
-                                'Failed to load tickets: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
-                            child: Text('No tickets available'));
-                      } else {
-                        return Column(
-                          children: snapshot.data!.map((ticket) {
-                            return _buildQueueCard(
-                              context,
-                              'Antrean #${ticket.idTicket}',
-                              ticket.userName ?? 'Guest',
-                              ticket.device.deviceName,
-                              ticket.createdAtDiff,
-                              _getColor(ticket.process.statusId),
-                              ticket.process.statusId,
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: _buildStatCard('Total Perangkat',
+                                      totalDevices.toString(), Colors.blue),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: _buildStatCard('Total \n Antrean',
+                                      totalQueues.toString(), Colors.orange),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: _buildStatCard('Total \n Proses',
+                                      totalProcesses.toString(), Colors.green),
+                                ),
+                              ],
                             );
-                          }).toList(),
-                        );
-                      }
-                    },
+                          }
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+                      // Queue Section
+                      const Text(
+                        'Antrean',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // FutureBuilder to display tickets
+                      FutureBuilder<List<Ticket>>(
+                        future: TicketController().fetchTickets(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text(
+                                    'Failed to load tickets: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No tickets available'));
+                          } else {
+                            return Column(
+                              children: snapshot.data!.map((ticket) {
+                                return _buildQueueCard(
+                                  context,
+                                  'Antrean #${ticket.idTicket}',
+                                  username ?? 'Guest',
+                                  ticket.device.deviceName,
+                                  ticket.createdAtDiff,
+                                  _getColor(ticket.process.statusId),
+                                  ticket.process.statusId,
+                                );
+                              }).toList(),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
       // bottomNavigationBar: BottomNavigationBar(
       //   items: const [
