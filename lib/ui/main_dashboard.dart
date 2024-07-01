@@ -27,6 +27,7 @@ class _MainDashboardState extends State<MainDashboard> {
     String? username = await userInfo.getUsername();
     setState(() {
       _username = username;
+      print(_username);
     });
   }
 
@@ -350,7 +351,6 @@ class DashboardData extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 16),
-
                       // Queue Section
                       const Text(
                         'Antrean',
