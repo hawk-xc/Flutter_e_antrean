@@ -251,47 +251,49 @@ class _DeviceViewState extends State<DeviceView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/mydoodle.jpg'),
-              fit: BoxFit.cover,
+      body: SafeArea(
+        child: Stack(children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/mydoodle.jpg'),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-        SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              if (showForm)
-                SlideTransition(
-                  position: _animation,
-                  child: DeviceForm(
-                    formKey: _formKey,
-                    nameController: _nameController,
-                    yearController: _yearController,
-                    driveLinkController: _driveLinkController,
-                    isLoading: isLoading,
-                    toggleFormVisibility: _toggleFormVisibility,
-                    addDevice: _addOrEditDevice,
-                    isEditing: isEditing,
-                    deleteDevice: _deleteDevice,
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                if (showForm)
+                  SlideTransition(
+                    position: _animation,
+                    child: DeviceForm(
+                      formKey: _formKey,
+                      nameController: _nameController,
+                      yearController: _yearController,
+                      driveLinkController: _driveLinkController,
+                      isLoading: isLoading,
+                      toggleFormVisibility: _toggleFormVisibility,
+                      addDevice: _addOrEditDevice,
+                      isEditing: isEditing,
+                      deleteDevice: _deleteDevice,
+                    ),
+                  )
+                else if (devices.isEmpty)
+                  DeviceEmpty(onAddDevice: () => _toggleFormVisibility())
+                else
+                  DeviceNotEmpty(
+                    devices: devices,
+                    onAddDevice: () => _toggleFormVisibility(),
+                    onEditDevice: (device) =>
+                        _toggleFormVisibility(editing: true, device: device),
                   ),
-                )
-              else if (devices.isEmpty)
-                DeviceEmpty(onAddDevice: () => _toggleFormVisibility())
-              else
-                DeviceNotEmpty(
-                  devices: devices,
-                  onAddDevice: () => _toggleFormVisibility(),
-                  onEditDevice: (device) =>
-                      _toggleFormVisibility(editing: true, device: device),
-                ),
-            ],
-          ),
-        )
-      ]),
+              ],
+            ),
+          )
+        ]),
+      ),
     );
   }
 }

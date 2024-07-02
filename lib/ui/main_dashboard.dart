@@ -27,28 +27,29 @@ class _MainDashboardState extends State<MainDashboard> {
     String? username = await userInfo.getUsername();
     setState(() {
       _username = username;
-      print(_username);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<Ticket>>(
-        future: futureTickets,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Failed to load tickets: ${snapshot.error}'),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return DashboardView(username: _username);
-          } else {
-            return DashboardData(username: _username);
-          }
-        },
+      body: SafeArea(
+        child: FutureBuilder<List<Ticket>>(
+          future: futureTickets,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Failed to load tickets: ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return DashboardView(username: _username);
+            } else {
+              return DashboardData(username: _username);
+            }
+          },
+        ),
       ),
     );
   }
@@ -242,186 +243,176 @@ class DashboardData extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'assets/images/mydoodle.jpg'), // Background image
+                image: AssetImage('assets/images/mydoodle.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Welcome Section
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Selamat datang,',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                  Text(
-                                    username ?? 'Guest', // Username
-                                    style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              const CircleAvatar(
-                                radius: 30,
-                                backgroundImage: AssetImage(
-                                    'assets/images/avatar.png'), // Placeholder image
-                              ),
-                            ],
-                          ),
-                        ),
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Welcome Section
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      const SizedBox(height: 16),
-
-                      // Statistic Section
-                      FutureBuilder<List<Ticket>>(
-                        future: TicketController().fetchTickets(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(
-                                child: Text(
-                                    'Failed to load tickets: ${snapshot.error}'));
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return const Center(
-                                child: Text('No tickets available'));
-                          } else {
-                            int totalDevices = snapshot.data!
-                                .map((ticket) => ticket.device)
-                                .toSet()
-                                .length;
-                            int totalProcesses = snapshot.data!
-                                .map((ticket) => ticket.process.id)
-                                .toSet()
-                                .length;
-
-                            // Calculate total queues
-                            int totalQueues = snapshot.data!
-                                .map((ticket) => ticket)
-                                .toSet()
-                                .length;
-
-                            return Row(
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  child: _buildStatCard('Total Perangkat',
-                                      totalDevices.toString(), Colors.blue),
+                                const Text(
+                                  'Selamat datang,',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.blue,
+                                  ),
                                 ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: _buildStatCard('Total \n Antrean',
-                                      totalQueues.toString(), Colors.orange),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: _buildStatCard('Total \n Proses',
-                                      totalProcesses.toString(), Colors.green),
+                                Text(
+                                  username ?? 'Guest',
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
-                            );
-                          }
-                        },
-                      ),
-
-                      const SizedBox(height: 16),
-                      // Queue Section
-                      const Text(
-                        'Antrean',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                            ),
+                            const Spacer(),
+                            const CircleAvatar(
+                              radius: 30,
+                              backgroundImage: AssetImage(
+                                  'assets/images/avatar.png'), // Placeholder image
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 8),
+                    ),
+                    const SizedBox(height: 16),
 
-                      // FutureBuilder to display tickets
-                      FutureBuilder<List<Ticket>>(
-                        future: TicketController().fetchTickets(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(
-                                child: Text(
-                                    'Failed to load tickets: ${snapshot.error}'));
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return const Center(
-                                child: Text('No tickets available'));
-                          } else {
-                            return Column(
-                              children: snapshot.data!.map((ticket) {
-                                return _buildQueueCard(
-                                  context,
-                                  'Antrean #${ticket.idTicket}',
-                                  username ?? 'Guest',
-                                  ticket.device.deviceName,
-                                  ticket.createdAtDiff,
-                                  _getColor(ticket.process.statusId),
-                                  ticket.process.statusId,
-                                );
-                              }).toList(),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
+                    // Statistic Section
+                    FutureBuilder<List<Ticket>>(
+                      future: TicketController().fetchTickets(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text(
+                                  'Failed to load tickets: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return const Center(
+                              child: Text('No tickets available'));
+                        } else {
+                          int totalDevices = snapshot.data!
+                              .map((ticket) => ticket.device)
+                              .toSet()
+                              .length;
+                          int totalProcesses = snapshot.data!
+                              .map((ticket) => ticket.process.id)
+                              .toSet()
+                              .length;
+
+                          // Calculate total queues
+                          int totalQueues = snapshot.data!
+                              .map((ticket) => ticket)
+                              .toSet()
+                              .length;
+
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: _buildStatCard('Total Perangkat',
+                                    totalDevices.toString(), Colors.blue),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: _buildStatCard('Total \n Antrean',
+                                    totalQueues.toString(), Colors.orange),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: _buildStatCard('Total \n Proses',
+                                    totalProcesses.toString(), Colors.green),
+                              ),
+                            ],
+                          );
+                        }
+                      },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Queue Section
+                    const SizedBox(height: 8),
+
+                    // FutureBuilder to display tickets
+                    FutureBuilder<List<Ticket>>(
+                      future: TicketController().fetchTickets(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text(
+                                  'Failed to load tickets: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return const Center(
+                              child: Text('No tickets available'));
+                        } else {
+                          return Card(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Antrean',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Column(
+                                      children: snapshot.data!.map((ticket) {
+                                        return _buildQueueCard(
+                                          context,
+                                          '#${ticket.idTicket}',
+                                          username ?? 'Guest',
+                                          ticket.device.deviceName,
+                                          ticket.createdAtDiff,
+                                          _getColor(ticket.process.statusId),
+                                          ticket.process.statusId,
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ]),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.devices),
-      //       label: 'Devices',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.list),
-      //       label: 'Queues',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.person),
-      //       label: 'Profile',
-      //     ),
-      //   ],
-      // ),
     );
   }
 
@@ -435,20 +426,19 @@ class DashboardData extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center,
-              ),
+              Text(title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.start),
               const SizedBox(height: 8),
               Text(
                 count,
                 style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 45,
+                  fontWeight: FontWeight.w800,
                   color: color,
                 ),
               ),
@@ -478,7 +468,7 @@ class DashboardData extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: const LinearGradient(
-            colors: [Color(0xFF4A00E0), Color(0xFF8E2DE2)],
+            colors: [Color(0xFF83A4D2), Color(0xFF2D2B90)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -491,14 +481,22 @@ class DashboardData extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Antrean',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ]),
                   ),
                   ElevatedButton(
                     onPressed: () {},

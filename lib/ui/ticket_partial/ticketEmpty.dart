@@ -64,7 +64,7 @@ class TicketEmpty extends StatelessWidget {
                               color: Colors.white,
                             ),
                             Text(
-                              'Tambah Perangkat',
+                              'Tambah Antrean',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
